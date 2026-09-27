@@ -5,9 +5,9 @@
 
 // Configuration for third-party integrations (Clerk Auth, Formspree, etc.)
 window.SMOOTH_BIRTH_CONFIG = {
-    // Paste your Formspree Form ID here (e.g. "xpwzlkjq")
-    formspreeOrderEndpoint: "https://formspree.io/f/YOUR_FORMSPREE_ID",
-    formspreeRegEndpoint: "https://formspree.io/f/YOUR_FORMSPREE_ID",
+    // Active Formspree Form endpoint
+    formspreeOrderEndpoint: "https://formspree.io/f/xbglpwbe",
+    formspreeRegEndpoint: "https://formspree.io/f/xbglpwbe",
     // Paste your Clerk Publishable Key here when ready (e.g. "pk_test_...")
     clerkPublishableKey: ""
 };

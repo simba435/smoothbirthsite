@@ -95,8 +95,8 @@ To receive order and registration submissions directly to your email:
 3. Open `js/main.js` and paste your Form ID in `window.SMOOTH_BIRTH_CONFIG`:
    ```javascript
    window.SMOOTH_BIRTH_CONFIG = {
-       formspreeOrderEndpoint: "https://formspree.io/f/YOUR_ACTUAL_ID",
-       formspreeRegEndpoint: "https://formspree.io/f/YOUR_ACTUAL_ID",
+       formspreeOrderEndpoint: "https://formspree.io/f/xbglpwbe",
+       formspreeRegEndpoint: "https://formspree.io/f/xbglpwbe",
        clerkPublishableKey: ""
    };
    ```
