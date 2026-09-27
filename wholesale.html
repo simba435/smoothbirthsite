@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wholesale Portal | Smooth Birth Apothecary</title>
+    <meta name="description" content="Wholesale ordering and practitioner registration for Smooth Birth Apothecary. Dedicated B2B dispensary restocking for midwives, doulas, and birth clinics.">
+    <meta property="og:title" content="Wholesale Portal | Smooth Birth Apothecary">
+    <meta property="og:description" content="Equip your birth kit and dispensary with direct wholesale pricing and frictionless reordering.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://smoothbirth.com/wholesale.html">
+    <link rel="canonical" href="https://smoothbirth.com/wholesale.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="apple-touch-icon" href="images/favicon.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-light">
+
+    <!-- Navigation -->
+    <nav class="navbar scrolled" id="navbar" style="position: relative; background: #fff;">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="leaf-icon">❧</span>
+                Smooth Birth
+                <span>Apothecary</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html#home">Main Site</a></li>
+                <li><a href="index.html#tinctures">Tinctures</a></li>
+                <li><a href="index.html#about">Founder</a></li>
+                <li><a href="wholesale.html" class="btn-primary" style="padding: 0.7rem 1.6rem;">Wholesale Portal</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger" aria-label="Toggle navigation menu" role="button" tabindex="0">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <section style="padding: 4rem 0 2rem; text-align: center;">
+        <div class="container">
+            <span class="section-subtitle">Practitioner &amp; Clinic Portal</span>
+            <h1 class="section-title" style="margin-bottom: 0.8rem;">B2B Wholesale Ordering</h1>
+            <p class="section-description">
+                Direct botanical restocking for credentialed Midwives, Doulas, OB-GYNs, and Perinatal Holistic Clinics.
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Portal Container -->
+    <main class="container" style="max-width: 960px; padding-bottom: 5rem;">
+
+        <!-- Free Shipping Promo Banner -->
+        <div class="promo-free-shipping">
+            <span class="star">🌟</span>
+            <span><strong>Enjoy FREE direct shipping</strong> on all wholesale orders over <strong>$250</strong>!</span>
+            <span class="star">🌟</span>
+        </div>
+
+        <!-- Portal Tabs Navigation -->
+        <div class="wholesale-tabs-nav">
+            <button class="wholesale-tab-trigger active" id="tab-btn-order" type="button">Master Order Form</button>
+            <button class="wholesale-tab-trigger" id="tab-btn-apply" type="button">Practitioner Application / Sign Up</button>
+        </div>
+
+        <!-- ============================================
+             VIEW 1: WHOLESALE MASTER ORDER FORM
+             ============================================ -->
+        <div class="portal-view active" id="view-order">
+            <div class="portal-card">
+                <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; margin-bottom: 1.5rem;">
+                    <div>
+                        <h2 style="font-family: var(--font-serif); font-size: 1.9rem; margin-bottom: 0.2rem;">Wholesale Master Order Form</h2>
+                        <p style="font-size: 0.88rem; color: var(--text-light);">
+                            Minimum batch order per formula is 8 oz (8 bottles for 1 oz / 4 bottles for 2 oz).
+                        </p>
+                    </div>
+                    <div style="font-size: 0.8rem; background: var(--bg-cream); padding: 0.4rem 0.8rem; border-radius: 4px; border: 1px solid var(--border-gold);">
+                        <span>Status: </span><strong style="color: var(--primary-dark);">Practitioner Restocking Mode</strong>
+                    </div>
+                </div>
+
+                <div class="portal-badge-notice">
+                    <strong>Frictionless Invoicing:</strong> Submitting this form generates an order request sent directly to our dispensary team. We will review your clinic details and email a secure <strong>Square / QuickBooks invoice</strong>. Upon payment, your freshly prepared tinctures ship directly to your clinic from our manufacturing partner.
+                </div>
+
+                <!-- Master Order Form -->
+                <form id="wholesale-order-form" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
+                    <input type="hidden" name="_subject" value="New Wholesale Order Request - Smooth Birth Apothecary">
+                    <input type="hidden" name="_next" value="https://smoothbirth.com/thanks.html">
+                    <input type="hidden" name="form_type" value="Wholesale Master Order">
+
+                    <!-- Section 1: Practice & Shipping Details -->
+                    <h3 style="font-size: 1.3rem; margin-bottom: 1rem; color: var(--primary-dark);">Section 1: Shipping &amp; Clinic Details</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.2rem; margin-bottom: 2rem;">
+                        <div class="form-group">
+                            <label for="order-clinic" style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.3rem;">Clinic / Practice Name *</label>
+                            <input type="text" id="order-clinic" name="clinic_name" required placeholder="e.g. Boulder Birth &amp; Wellness" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-light); border-radius: 4px;">
+                        </div>
+                        <div class="form-group">
+                            <label for="order-contact" style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.3rem;">Primary Contact / Practitioner Name *</label>
+                            <input type="text" id="order-contact" name="contact_name" required placeholder="e.g. Jane Doe, CNM" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-light); border-radius: 4px;">
+                        </div>
+                        <div class="form-group">
+                            <label for="order-email" style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.3rem;">Invoice &amp; Contact Email *</label>
+                            <input type="email" id="order-email" name="email" required placeholder="billing@clinic.com" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-light); border-radius: 4px;">
+                        </div>
+                        <div class="form-group">
+                            <label for="order-phone" style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.3rem;">Phone Number (Required for FedEx/UPS tracking) *</label>
+                            <input type="tel" id="order-phone" name="phone" required placeholder="(303) 555-0199" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-light); border-radius: 4px;">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 2.5rem;">
+                        <label for="order-address" style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.3rem;">Shipping Address (Street, Suite, City, State, ZIP) *</label>
+                        <input type="text" id="order-address" name="shipping_address" required placeholder="123 Healer Way, Suite 200, Boulder, CO 80302" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-light); border-radius: 4px;">
+                    </div>
+
+                    <!-- Section 2: Order Request -->
+                    <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; margin-bottom: 1rem;">
+                        <h3 style="font-size: 1.3rem; margin-bottom: 0.3rem; color: var(--primary-dark);">Section 2: The Order Request</h3>
+                        <div style="font-size: 0.82rem; color: var(--gold-dark); font-weight: 600;">
+                            1 oz: $11.00 Wholesale (MSRP $22) &bull; 2 oz: $20.00 Wholesale (MSRP $36)
+                        </div>
+                    </div>
+
+                    <!-- Table Header -->
+                    <div class="order-item-row header-row">
+                        <div>Formula / Product</div>
+                        <div>Size</div>
+                        <div>Min. Batch</div>
+                        <div>Wholesale / MSRP</div>
+                        <div>Quantity</div>
+                        <div>Item Total</div>
+                    </div>
+
+                    <!-- Category: Pregnancy Support -->
+                    <div class="order-group-title">
+                        <span>Phase 1: Pregnancy Support</span>
+                        <span class="order-group-subtitle">Trimesters 1, 2 &amp; 3</span>
+                    </div>
+
+                    <div class="order-item-row" data-id="swell-away" data-size="2 oz" data-price="20" data-msrp="36" data-min="4">
+                        <div class="item-name-col" style="display: flex; align-items: center; gap: 0.8rem;">
+                            <img src="images/products/swell-away.png" alt="Swell Away" style="height: 38px; width: auto; border-radius: 3px; border: 1px solid var(--border-light); background: #fafafa;" loading="lazy">
+                            <div>
+                                <strong>Swell Away</strong>
+                                <span style="font-size: 0.8rem; color: var(--text-light);">Prenatal Edema &amp; Carpal Tunnel</span>
+                            </div>
+                        </div>
+                        <div>2 fl oz (60ml)</div>
+                        <div><span class="item-min-tag">min. 4 bottles</span></div>
+                        <div>$20.00 <span style="font-size: 0.75rem; color: var(--text-muted);">($36 MSRP)</span></div>
+                        <div class="qty-input-wrap">
+                            <button type="button" class="qty-btn btn-minus">&minus;</button>
+                            <input type="number" name="qty_swell_away" class="qty-input" value="0" min="0" step="1">
+                            <button type="button" class="qty-btn btn-plus">&plus;</button>
+                        </div>
+                        <div class="item-subtotal-val">$0.00</div>
+                    </div>
+
+                    <div class="order-item-row" data-id="deep-rest-1" data-size="2 oz" data-price="20" data-msrp="36" data-min="4">
+                        <div class="item-name-col" style="display: flex; align-items: center; gap: 0.8rem;">
+                            <img src="images/products/deep-rest-1.png" alt="Deep Rest 1" style="height: 38px; width: auto; border-radius: 3px; border: 1px solid var(--border-light); background: #fafafa;" loading="lazy">
+                            <div>
+                                <strong>Deep Rest 1</strong>
+                                <span style="font-size: 0.8rem; color: var(--text-light);">Prenatal Sleep &amp; System Support</span>
+                            </div>
+                        </div>
+                        <div>2 fl oz (60ml)</div>
+                        <div><span class="item-min-tag">min. 4 bottles</span></div>
+                        <div>$20.00 <span style="font-size: 0.75rem; color: var(--text-muted);">($36 MSRP)</span></div>
+                        <div class="qty-input-wrap">
+                            <button type="button" class="qty-btn btn-minus">&minus;</button>
+                            <input type="number" name="qty_deep_rest_1" class="qty-input" value="0" min="0" step="1">
+                            <button type="button" class="qty-btn btn-plus">&plus;</button>
+                        </div>
+                        <div class="item-subtotal-val">$0.00</div>
+                    </div>
+
+                    <div class="order-item-row" data-id="deep-rest-2" data-size="2 oz" data-price="20" data-msrp="36" data-min="4">
+                        <div class="item-name-col" style="display: flex; align-items: center; gap: 0.8rem;">
+                            <img src="images/products/deep-rest-2.png" alt="Deep Rest 2" style="height: 38px; width: auto; border-radius: 3px; border: 1px solid var(--border-light); background: #fafafa;" loading="lazy">
+                            <div>
+                                <strong>Deep Rest 2</strong>
+                                <span style="font-size: 0.8rem; color: var(--text-light);">Late Pregnancy Sleep &amp; Night Sweats</span>
+                            </div>
+                        </div>
+                        <div>2 fl oz (60ml)</div>
+                        <div><span class="item-min-tag">min. 4 bottles</span></div>
+                        <div>$20.00 <span style="font-size: 0.75rem; color: var(--text-muted);">($36 MSRP)</span></div>
+                        <div class="qty-input-wrap">
+                            <button type="button" class="qty-btn btn-minus">&minus;</button>
+                            <input type="number" name="qty_deep_rest_2" class="qty-input" value="0" min="0" step="1">
+                            <button type="button" class="qty-btn btn-plus">&plus;</button>
+                        </div>
+                        <div class="item-subtotal-val">$0.00</div>
+                    </div>
+
+                    <div class="order-item-row" data-id="cool-center" data-size="1 oz" data-price="11" data-msrp="22" data-min="8">
+                        <div class="item-name-col" style="display: flex; align-items: center; gap: 0.8rem;">
+                            <img src="images/products/cool-center.png" alt="Cool Center" style="height: 38px; width: auto; border-radius: 3px; border: 1px solid var(--border-light); background: #fafafa;" loading="lazy">
+                            <div>
+                                <strong>Cool Center</strong>
+                                <span style="font-size: 0.8rem; color: var(--text-light);">Heartburn &amp; Acid Reflux Relief</span>
+                            </div>
+                        </div>
+                        <div>1 fl oz (30ml)</div>
+                        <div><span class="item-min-tag">min. 8 bottles</span></div>
+                        <div>$11.00 <span style="font-size: 0.75rem; color: var(--text-muted);">($22 MSRP)</span></div>
+                        <div class="qty-input-wrap">
+                            <button type="button" class="qty-btn btn-minus">&minus;</button>
+                            <input type="number" name="qty_cool_center" class="qty-input" value="0" min="0" step="1">
+                            <button type="button" class="qty-btn btn-plus">&plus;</button>
+                        </div>
+                        <div class="item-subtotal-val">$0.00</div>
+                    </div>
+
+                    <!-- Category: Birth Prep -->
+                    <div class="order-group-title">
+                        <span>Phase 2: Birth Prep</span>
+                        <span class="order-group-subtitle">37 Weeks &amp; Beyond</span>
+                    </div>
+
+                    <div class="order-item-row" data-id="getting-ready" data-size="1 oz" data-price="11" data-msrp="22" data-min="8">
+                        <div class="item-name-col" style="display: flex; align-items: center; gap: 0.8rem;">
+                            <img src="images/products/getting-ready.png" alt="Getting Ready" style="height: 38px; width: auto; border-radius: 3px; border: 1px solid var(--border-light); background: #fafafa;" loading="lazy">
+                            <div>
+                                <strong>Getting Ready</strong>
+                                <span style="font-size: 0.8rem; color: var(--text-light);">Birth Prep &amp; Pelvic Relaxation (39+ wks)</span>
+                            </div>
+                        </div>
+                        <div>1 fl oz (30ml)</div>
+                        <div><span class="item-min-tag">min. 8 bottles</span></div>
+                        <div>$11.00 <span style="font-size: 0.75rem; color: var(--text-muted);">($22 MSRP)</span></div>
+                        <div class="qty-input-wrap">
+                            <button type="button" class="qty-btn btn-minus">&minus;</button>
+                            <input type="number" name="qty_getting_ready" class="qty-input" value="0" min="0" step="1">
+                            <button type="button" class="qty-btn btn-plus">&plus;</button>
+                        </div>
+                        <div class="item-subtotal-val">$0.00</div>
+                    </div>
+
+                    <div class="order-item-row" data-id="boost-up" data-size="1 oz" data-price="11" data-msrp="22" data-min="8">
+                        <div class="item-name-col" style="display: flex; align-items: center; gap: 0.8rem;">
+                            <img src="images/products/boost-up.png" alt="Boost Up" style="height: 38px; width: auto; border-radius: 3px; border: 1px solid var(--border-light); background: #fafafa;" loading="lazy">
+                            <div>
+                                <strong>Boost Up</strong>
+                                <span style="font-size: 0.8rem; color: var(--text-light);">Labor Stamina &amp; Exhaustion Prevention</span>
+                            </div>
+                        </div>
+                        <div>1 fl oz (30ml)</div>
+                        <div><span class="item-min-tag">min. 8 bottles</span></div>
+                        <div>$11.00 <span style="font-size: 0.75rem; color: var(--text-muted);">($22 MSRP)</span></div>
+                        <div class="qty-input-wrap">
+                            <button type="button" class="qty-btn btn-minus">&minus;</button>
+                            <input type="number" name="qty_boost_up" class="qty-input" value="0" min="0" step="1">
+                            <button type="button" class="qty-btn btn-plus">&plus;</button>
+                        </div>
+                        <div class="item-subtotal-val">$0.00</div>
+                    </div>
+
+                    <!-- Category: Labor Support -->
+                    <div class="order-group-title">
+                        <span>Phase 3: Labor Support</span>
+                        <span class="order-group-subtitle">Active Birth Clinical Tools</span>
+                    </div>
+
+                    <div class="order-item-row" data-id="more-oomph" data-size="2 oz" data-price="20" data-msrp="36" data-min="4">
+                        <div class="item-name-col" style="display: flex; align-items: center; gap: 0.8rem;">
+                            <img src="images/products/more-oomph.png" alt="More Oomph" style="height: 38px; width: auto; border-radius: 3px; border: 1px solid var(--border-light); background: #fafafa;" loading="lazy">
+                            <div>
+                                <strong>More Oomph</strong>
+                                <span style="font-size: 0.8rem; color: var(--text-light);">Active Labor Contraction Catalyst</span>
+                            </div>
+                        </div>
+                        <div>2 fl oz (60ml)</div>
+                        <div><span class="item-min-tag">min. 4 bottles</span></div>
+                        <div>$20.00 <span style="font-size: 0.75rem; color: var(--text-muted);">($36 MSRP)</span></div>
+                        <div class="qty-input-wrap">
+                            <button type="button" class="qty-btn btn-minus">&minus;</button>
+                            <input type="number" name="qty_more_oomph" class="qty-input" value="0" min="0" step="1">
+                            <button type="button" class="qty-btn btn-plus">&plus;</button>
+                        </div>
+                        <div class="item-subtotal-val">$0.00</div>
+                    </div>
+
+                    <div class="order-item-row" data-id="high-baby" data-size="2 oz" data-price="20" data-msrp="36" data-min="4">
+                        <div class="item-name-col" style="display: flex; align-items: center; gap: 0.8rem;">
+                            <img src="images/products/high-baby.png" alt="High Baby" style="height: 38px; width: auto; border-radius: 3px; border: 1px solid var(--border-light); background: #fafafa;" loading="lazy">
+                            <div>
+                                <strong>High Baby</strong>
+                                <span style="font-size: 0.8rem; color: var(--text-light);">High Fetal Station &amp; Downward Descent</span>
+                            </div>
+                        </div>
+                        <div>2 fl oz (60ml)</div>
+                        <div><span class="item-min-tag">min. 4 bottles</span></div>
+                        <div>$20.00 <span style="font-size: 0.75rem; color: var(--text-muted);">($36 MSRP)</span></div>
+                        <div class="qty-input-wrap">
+                            <button type="button" class="qty-btn btn-minus">&minus;</button>
+                            <input type="number" name="qty_high_baby" class="qty-input" value="0" min="0" step="1">
+                            <button type="button" class="qty-btn btn-plus">&plus;</button>
+                        </div>
+                        <div class="item-subtotal-val">$0.00</div>
+                    </div>
+
+                    <div class="order-item-row" data-id="turn-around" data-size="2 oz" data-price="20" data-msrp="36" data-min="4">
+                        <div class="item-name-col" style="display: flex; align-items: center; gap: 0.8rem;">
+                            <img src="images/products/turn-around.png" alt="Turn Around" style="height: 38px; width: auto; border-radius: 3px; border: 1px solid var(--border-light); background: #fafafa;" loading="lazy">
+                            <div>
+                                <strong>Turn Around</strong>
+                                <span style="font-size: 0.8rem; color: var(--text-light);">OP Fetal Malposition &amp; Pelvic Rotation</span>
+                            </div>
+                        </div>
+                        <div>2 fl oz (60ml)</div>
+                        <div><span class="item-min-tag">min. 4 bottles</span></div>
+                        <div>$20.00 <span style="font-size: 0.75rem; color: var(--text-muted);">($36 MSRP)</span></div>
+                        <div class="qty-input-wrap">
+                            <button type="button" class="qty-btn btn-minus">&minus;</button>
+                            <input type="number" name="qty_turn_around" class="qty-input" value="0" min="0" step="1">
+                            <button type="button" class="qty-btn btn-plus">&plus;</button>
+                        </div>
+                        <div class="item-subtotal-val">$0.00</div>
+                    </div>
+
+                    <!-- Category: Postpartum Recovery -->
+                    <div class="order-group-title">
+                        <span>Phase 4: Postpartum Recovery</span>
+                        <span class="order-group-subtitle">Fourth Trimester Healing</span>
+                    </div>
+
+                    <div class="order-item-row" data-id="abundant-flow" data-size="2 oz" data-price="20" data-msrp="36" data-min="4">
+                        <div class="item-name-col" style="display: flex; align-items: center; gap: 0.8rem;">
+                            <img src="images/products/abundant-flow.png" alt="Abundant Flow" style="height: 38px; width: auto; border-radius: 3px; border: 1px solid var(--border-light); background: #fafafa;" loading="lazy">
+                            <div>
+                                <strong>Abundant Flow</strong>
+                                <span style="font-size: 0.8rem; color: var(--text-light);">Postpartum Lactation &amp; Recovery</span>
+                            </div>
+                        </div>
+                        <div>2 fl oz (60ml)</div>
+                        <div><span class="item-min-tag">min. 4 bottles</span></div>
+                        <div>$20.00 <span style="font-size: 0.75rem; color: var(--text-muted);">($36 MSRP)</span></div>
+                        <div class="qty-input-wrap">
+                            <button type="button" class="qty-btn btn-minus">&minus;</button>
+                            <input type="number" name="qty_abundant_flow" class="qty-input" value="0" min="0" step="1">
+                            <button type="button" class="qty-btn btn-plus">&plus;</button>
+                        </div>
+                        <div class="item-subtotal-val">$0.00</div>
+                    </div>
+
+                    <!-- Order Summary Box -->
+                    <div class="order-summary-box">
+                        <div style="font-family: var(--font-serif); font-size: 1.4rem; margin-bottom: 1rem; color: var(--text-dark);">
+                            Order Calculation Summary
+                        </div>
+
+                        <div class="summary-rows">
+                            <div class="summary-row">
+                                <span>Total Bottles Requested:</span>
+                                <strong id="summary-total-qty">0 bottles</strong>
+                            </div>
+                            <div class="summary-row">
+                                <span>Wholesale Products Subtotal:</span>
+                                <strong id="summary-subtotal">$0.00</strong>
+                            </div>
+                            <div class="summary-row">
+                                <span>Estimated Retail Value (MSRP):</span>
+                                <span id="summary-msrp" style="color: var(--text-light);">$0.00</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Your Clinic Margin:</span>
+                                <span id="summary-margin" style="color: var(--primary-dark); font-weight: 600;">$0.00</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Shipping &amp; Handling:</span>
+                                <span id="summary-shipping">$15.00 Flat Rate</span>
+                            </div>
+                        </div>
+
+                        <!-- Free Shipping Meter -->
+                        <div style="margin: 1rem 0;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.3rem;">
+                                <span id="shipping-progress-text">Add $250.00 for FREE Shipping</span>
+                                <span style="font-weight: 600; color: var(--gold-dark);">$250.00 Goal</span>
+                            </div>
+                            <div class="free-ship-meter">
+                                <div class="free-ship-bar" id="free-ship-bar"></div>
+                            </div>
+                        </div>
+
+                        <div class="summary-row total-row">
+                            <span>Estimated Invoice Total:</span>
+                            <span id="summary-grand-total" style="color: var(--primary);">$15.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Hidden summary payload for email notification -->
+                    <input type="hidden" name="order_summary_json" id="order-summary-json">
+
+                    <!-- Section 3: Acknowledgment -->
+                    <h3 style="font-size: 1.3rem; margin-bottom: 1rem; color: var(--primary-dark);">Section 3: Acknowledgment &amp; Special Instructions</h3>
+
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label for="order-notes" style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.3rem;">Message / Special Instructions (Optional)</label>
+                        <textarea id="order-notes" name="special_instructions" rows="3" placeholder="Provide any delivery notes, gate codes, or questions..." style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-light); border-radius: 4px; font-family: var(--font-sans);"></textarea>
+                    </div>
+
+                    <div class="legal-ack-box">
+                        <input type="checkbox" id="order-ack" name="terms_acknowledged" required>
+                        <label for="order-ack">
+                            <strong>I understand that submitting this form is an order request.</strong> Smooth Birth Apothecary will email a secure invoice for the products and bulk shipping costs (free for orders over $250). Orders are fulfilled and shipped directly from our manufacturing partner upon payment.
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="order-submit-btn" style="width: 100%; padding: 1.2rem; font-size: 0.9rem;">
+                        Submit Wholesale Order Request &rarr;
+                    </button>
+                    <p style="font-size: 0.78rem; color: var(--text-light); text-align: center; margin-top: 0.8rem;">
+                        Direct wholesale inquiry &bull; Invoiced securely via Square/QuickBooks &bull; Questions? Email hello@smoothbirth.com
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        <!-- ============================================
+             VIEW 2: PRACTITIONER APPLICATION / REGISTRATION
+             ============================================ -->
+        <div class="portal-view" id="view-apply">
+            <div class="portal-card">
+                <h2 style="font-family: var(--font-serif); font-size: 1.9rem; margin-bottom: 0.5rem;">Practitioner Account Application</h2>
+                <p style="font-size: 0.92rem; color: var(--text-light); margin-bottom: 1.5rem;">
+                    To protect practitioner dispensaries, accounts are held in a pending state while we verify licensing or professional doula/midwifery certification.
+                </p>
+
+                <div class="portal-badge-notice">
+                    <strong>The Gatekeeper Approval Process:</strong> Once submitted, our team reviews your clinic credentials (typically within 24 business hours). Upon approval, you will receive an automated welcome email with access details and wholesale perks.
+                </div>
+
+                <form id="practitioner-register-form" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
+                    <input type="hidden" name="_subject" value="New Practitioner Account Application - Smooth Birth Apothecary">
+                    <input type="hidden" name="_next" value="https://smoothbirth.com/thanks.html">
+                    <input type="hidden" name="form_type" value="Practitioner Application">
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.2rem; margin-bottom: 1.5rem;">
+                        <div class="form-group">
+                            <label for="reg-name" style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.3rem;">Your Full Name *</label>
+                            <input type="text" id="reg-name" name="practitioner_name" required placeholder="Dr. / Midwife / Doula Name" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-light); border-radius: 4px;">
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-clinic" style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.3rem;">Clinic or Business Name *</label>
+                            <input type="text" id="reg-clinic" name="clinic_name" required placeholder="e.g. Front Range Midwifery LLC" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-light); border-radius: 4px;">
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-email" style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.3rem;">Professional Email Address *</label>
+                            <input type="email" id="reg-email" name="email" required placeholder="contact@frontrangemidwifery.com" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-light); border-radius: 4px;">
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-phone" style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.3rem;">Clinic Phone Number *</label>
+                            <input type="tel" id="reg-phone" name="phone" required placeholder="(303) 555-0100" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-light); border-radius: 4px;">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label for="reg-credential" style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.3rem;">Professional Credential (License #, NPI, or Doula Certification Organization) *</label>
+                        <input type="text" id="reg-credential" name="credential" required placeholder="e.g. CO CPM License #12345 / DONA Certified Doula" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-light); border-radius: 4px;">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label for="reg-website" style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.3rem;">Business Website or Professional Social Media Link (Optional, but accelerates verification)</label>
+                        <input type="url" id="reg-website" name="website" placeholder="https://frontrangemidwifery.com" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-light); border-radius: 4px;">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 2rem;">
+                        <label for="reg-notes" style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.3rem;">Tell us about your practice or tincture needs (Optional)</label>
+                        <textarea id="reg-notes" name="notes" rows="3" placeholder="Approximate number of births attended per month, home birth vs birth center, etc." style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-light); border-radius: 4px; font-family: var(--font-sans);"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="reg-submit-btn" style="width: 100%; padding: 1.1rem; font-size: 0.9rem;">
+                        Submit Practitioner Application &rarr;
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p style="font-family: var(--font-serif); font-size: 1.2rem; color: var(--gold-dark); margin-bottom: 0.5rem;">
+                ❧ Smooth Birth Apothecary
+            </p>
+            <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 1.5rem;">
+                B2B Wholesale Portal &bull; Exclusively for Birth &amp; Healthcare Practitioners
+            </p>
+
+            <div style="display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 2rem; font-size: 0.85rem;">
+                <a href="index.html#home">Main Site</a>
+                <a href="index.html#tinctures">Smooth Birth Tinctures</a>
+                <a href="index.html#about">Meet the Founder</a>
+                <a href="wholesale.html" style="font-weight: 600; color: var(--primary);">Wholesale Portal</a>
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+            </div>
+
+            <!-- Mandatory FDA Disclaimer -->
+            <div class="fda-disclaimer">
+                <strong>FDA Compliance Notice:</strong> These statements have not been evaluated by the Food and Drug Administration. These products are not intended to diagnose, treat, cure, or prevent any disease.
+            </div>
+
+            <div class="footer-divider"></div>
+
+            <p style="font-size: 0.85rem;">
+                Practitioner Inquiries &amp; Support: <a href="mailto:hello@smoothbirth.com" style="color: var(--primary-dark); text-decoration: underline;">hello@smoothbirth.com</a>
+            </p>
+            <p style="font-size: 0.8rem; margin-top: 0.5rem; color: var(--text-muted);">
+                &copy; 2026 Smooth Birth Apothecary LLC. All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+</body>
+</html>
