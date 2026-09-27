@@ -100,6 +100,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Global helper for opening specific categories from navigation dropdown
+    window.openCategoryAccordion = function(categoryKey) {
+        const idMap = {
+            'pregnancy': 'cat-pregnancy',
+            'prep': 'cat-birthprep',
+            'labor': 'cat-laborsupport',
+            'postpartum': 'cat-postpartum'
+        };
+        const targetId = idMap[categoryKey] || categoryKey;
+        const targetEl = document.getElementById(targetId);
+        if (targetEl) {
+            categoryItems.forEach(item => {
+                item.style.display = 'block';
+            });
+            targetEl.classList.add('open');
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
+
     /* -----------------------------------------------------------
      * 4. Product Deep Details & FAQ Accordions
      * ----------------------------------------------------------- */

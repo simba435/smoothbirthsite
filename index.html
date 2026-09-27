@@ -36,15 +36,21 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="#home" class="logo">
-                <span class="leaf-icon">❧</span>
-                Smooth Birth
-                <span>Apothecary</span>
+                <span class="leaf-icon">❧</span> Smooth Birth <span>Apothecary</span>
             </a>
             <ul class="nav-links">
                 <li><a href="#home">Main</a></li>
-                <li><a href="#tinctures">Smooth Birth Tinctures</a></li>
                 <li><a href="#about">Meet the Founder</a></li>
-                <li><a href="wholesale.html" class="btn-primary" style="padding: 0.7rem 1.6rem;">Wholesale Portal</a></li>
+                <li class="nav-item-dropdown">
+                    <a href="#tinctures">Smooth Birth Tinctures <span class="caret">▾</span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#cat-pregnancy" onclick="window.openCategoryAccordion && window.openCategoryAccordion('pregnancy')">Pregnancy Support</a></li>
+                        <li><a href="#cat-birthprep" onclick="window.openCategoryAccordion && window.openCategoryAccordion('prep')">Birth Prep</a></li>
+                        <li><a href="#cat-laborsupport" onclick="window.openCategoryAccordion && window.openCategoryAccordion('labor')">Labor Support</a></li>
+                        <li><a href="#cat-postpartum" onclick="window.openCategoryAccordion && window.openCategoryAccordion('postpartum')">Postpartum Recovery</a></li>
+                    </ul>
+                </li>
+                <li><a href="wholesale.html" class="btn-primary">Wholesale Portal</a></li>
             </ul>
             <div class="hamburger" id="hamburger" aria-label="Toggle navigation menu" role="button" tabindex="0">
                 <span class="bar"></span>
@@ -59,16 +65,11 @@
         <div class="hero-bg"></div>
         <div class="hero-content reveal">
             <p class="subtitle">Targeted Support for the Pregnancy Journey</p>
-            <h1 class="title">Smooth Birth Apothecary</h1>
-            <span class="title-credential">Traditional East Asian Herbal Tinctures · Formulated in Boulder, Colorado</span>
+            <h1 class="title">Traditional East Asian Herbal Tinctures</h1>
+            <span class="title-credential">Formulated in Boulder, Colorado · By Simba Eun-Hye Shim, L.Ac.</span>
             <p class="description">
-                A comprehensive line of clinical-grade botanicals bridging ancient holistic wisdom with practical perinatal care — formulated by certified acupuncturist and herbalist Simba Eun-Hye Shim, L.Ac.
+                A comprehensive line of clinical-grade botanicals bridging ancient holistic wisdom with practical perinatal care.
             </p>
-            <div class="hero-buttons">
-                <a href="#tinctures" class="btn-primary">Explore Tinctures</a>
-                <a href="#about" class="btn-secondary">Meet the Founder</a>
-                <a href="wholesale.html" class="btn-outline" style="border-color: rgba(255,255,255,0.8); color: #fff;">Wholesale Portal</a>
-            </div>
 
             <!-- Hero Image Showcase -->
             <div class="hero-showcase">
