@@ -192,6 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const freeShipBar = document.getElementById('free-ship-bar');
         const shippingProgressText = document.getElementById('shipping-progress-text');
         const orderSummaryJson = document.getElementById('order-summary-json');
+        const orderSummaryFormatted = document.getElementById('order-summary-formatted');
 
         const calculateOrder = () => {
             let totalQty = 0;
@@ -275,6 +276,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const grandTotal = subtotal > 0 ? (subtotal + shippingFee) : 0.00;
             summaryGrandTotal.textContent = `$${grandTotal.toFixed(2)}`;
 
+            // Build human-readable formatted order breakdown for direct email invoicing
+            let breakdownText = "";
+            itemsList.forEach(item => {
+                breakdownText += `• ${item.item} (${item.size}) : ${item.qty} bottles @ $${item.price.toFixed(2)}/ea = $${item.subtotal.toFixed(2)}\n`;
+            });
+            breakdownText += `\n----------------------------------------\n`;
+            breakdownText += `Total Bottles: ${totalQty}\n`;
+            breakdownText += `Wholesale Subtotal: $${subtotal.toFixed(2)}\n`;
+            breakdownText += `Suggested Retail (MSRP): $${totalMsrp.toFixed(2)}\n`;
+            breakdownText += `Practice Margin: $${margin.toFixed(2)} (${totalMsrp > 0 ? Math.round((margin / totalMsrp) * 100) : 0}%)\n`;
+            breakdownText += `Shipping: ${shippingFee === 0 ? 'FREE (Direct Shipping over $250)' : '$15.00 Flat Rate'}\n`;
+            breakdownText += `ESTIMATED INVOICE TOTAL: $${grandTotal.toFixed(2)}`;
+
+            if (orderSummaryFormatted) {
+                orderSummaryFormatted.value = breakdownText;
+            }
+
             // Build JSON summary payload
             if (orderSummaryJson) {
                 orderSummaryJson.value = JSON.stringify({
@@ -298,7 +316,6 @@ document.addEventListener('DOMContentLoaded', () => {
             minusBtn.addEventListener('click', () => {
                 let current = parseInt(qtyInput.value, 10) || 0;
                 if (current > 0) {
-                    // Step down to 0 if at min, or by 1
                     current = Math.max(0, current - 1);
                     qtyInput.value = current;
                     calculateOrder();
@@ -331,7 +348,13 @@ document.addEventListener('DOMContentLoaded', () => {
         orderForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const submitBtn = document.getElementById('order-submit-btn');
+            const feedbackBox = document.getElementById('order-form-feedback');
             const originalText = submitBtn.textContent;
+
+            if (feedbackBox) {
+                feedbackBox.style.display = 'none';
+                feedbackBox.innerHTML = '';
+            }
 
             // Check if any items are selected
             const totalQty = parseInt(summaryTotalQty.textContent, 10) || 0;
@@ -340,27 +363,89 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            const clinicName = (document.getElementById('order-clinic')?.value || '').trim();
+            const contactName = (document.getElementById('order-contact')?.value || '').trim();
+            const contactEmail = (document.getElementById('order-email')?.value || '').trim();
+            const contactPhone = (document.getElementById('order-phone')?.value || '').trim();
+            const shippingAddress = (document.getElementById('order-address')?.value || '').trim();
+            const notes = (document.getElementById('order-notes')?.value || '').trim();
+
             submitBtn.textContent = 'Submitting Order Request...';
             submitBtn.disabled = true;
+
+            // Build clean submission payload omitting zero-quantity rows so email is clean
+            const payload = new FormData();
+            payload.append('form_type', 'Wholesale Master Order');
+            payload.append('_subject', `New Wholesale Order: ${clinicName || 'Clinic'} (${totalQty} bottles - ${summaryGrandTotal.textContent})`);
+            payload.append('_replyto', contactEmail);
+            payload.append('clinic_name', clinicName);
+            payload.append('contact_name', contactName);
+            payload.append('email', contactEmail);
+            payload.append('phone', contactPhone);
+            payload.append('shipping_address', shippingAddress);
+
+            // Append only items that have quantity > 0
+            orderRows.forEach(row => {
+                const qtyInput = row.querySelector('.qty-input');
+                const qty = parseInt(qtyInput.value, 10) || 0;
+                if (qty > 0) {
+                    const name = row.querySelector('.item-name-col strong').textContent.trim();
+                    const size = row.getAttribute('data-size') || '';
+                    payload.append(`${name} (${size})`, `${qty} bottles`);
+                }
+            });
+
+            // Formatted order breakdown and JSON
+            if (orderSummaryFormatted) {
+                payload.append('Order_Breakdown', orderSummaryFormatted.value);
+            }
+            if (orderSummaryJson) {
+                payload.append('order_summary_json', orderSummaryJson.value);
+            }
+            if (notes) {
+                payload.append('special_instructions', notes);
+            }
+            payload.append('terms_acknowledged', 'Yes (Agreed to invoice & fulfillment terms)');
 
             const targetUrl = window.SMOOTH_BIRTH_CONFIG.formspreeOrderEndpoint || orderForm.action;
 
             fetch(targetUrl, {
                 method: 'POST',
-                body: new FormData(orderForm),
+                body: payload,
                 headers: { 'Accept': 'application/json' }
             })
             .then(res => {
                 if (res.ok) {
                     window.location.href = 'thanks.html';
                 } else {
-                    // Fallback redirect for configured test endpoints
-                    window.location.href = 'thanks.html';
+                    return res.json().then(data => {
+                        let errMsg = 'There was an issue processing your order submission.';
+                        if (data && data.errors && data.errors.length > 0) {
+                            errMsg = data.errors.map(err => err.message).join(', ');
+                        }
+                        throw new Error(errMsg);
+                    });
                 }
             })
-            .catch(() => {
-                // If demo mode or network block, forward to thank you page
-                window.location.href = 'thanks.html';
+            .catch(err => {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                if (feedbackBox) {
+                    feedbackBox.style.display = 'block';
+                    feedbackBox.style.background = '#FFF3F3';
+                    feedbackBox.style.border = '1px solid #D32F2F';
+                    feedbackBox.style.color = '#B71C1C';
+
+                    const mailtoSubject = encodeURIComponent(`Wholesale Order Request - ${clinicName}`);
+                    const mailtoBody = encodeURIComponent(`Hi Simba,\n\nHere is our wholesale order request for ${clinicName}:\n\nPrimary Contact: ${contactName}\nPhone: ${contactPhone}\nShipping Address: ${shippingAddress}\n\n${orderSummaryFormatted ? orderSummaryFormatted.value : ''}\n\nSpecial Instructions: ${notes}`);
+
+                    feedbackBox.innerHTML = `<strong>Submission Notice:</strong> ${err.message || 'We could not reach the form submission server.'}<br><br>
+                    <a href="mailto:hello@smoothbirth.com?subject=${mailtoSubject}&body=${mailtoBody}" style="color: #B71C1C; font-weight: 700; text-decoration: underline;">
+                        &rarr; Click here to send your order directly via Email to hello@smoothbirth.com
+                    </a>`;
+                } else {
+                    alert('Submission error: ' + (err.message || 'Please email your order to hello@smoothbirth.com'));
+                }
             });
         });
     }
@@ -373,21 +458,58 @@ document.addEventListener('DOMContentLoaded', () => {
         registerForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const submitBtn = document.getElementById('reg-submit-btn');
+            const feedbackBox = document.getElementById('reg-form-feedback');
+            const originalText = submitBtn.textContent;
+
+            if (feedbackBox) {
+                feedbackBox.style.display = 'none';
+                feedbackBox.innerHTML = '';
+            }
+
+            const regName = (document.getElementById('reg-name')?.value || '').trim();
+            const regClinic = (document.getElementById('reg-clinic')?.value || '').trim();
+            const regEmail = (document.getElementById('reg-email')?.value || '').trim();
+
             submitBtn.textContent = 'Submitting Application...';
             submitBtn.disabled = true;
+
+            const payload = new FormData(registerForm);
+            payload.set('_subject', `New Practitioner Application: ${regName} (${regClinic})`);
+            payload.set('_replyto', regEmail);
 
             const targetUrl = window.SMOOTH_BIRTH_CONFIG.formspreeRegEndpoint || registerForm.action;
 
             fetch(targetUrl, {
                 method: 'POST',
-                body: new FormData(registerForm),
+                body: payload,
                 headers: { 'Accept': 'application/json' }
             })
             .then(res => {
-                window.location.href = 'thanks.html';
+                if (res.ok) {
+                    window.location.href = 'thanks.html';
+                } else {
+                    return res.json().then(data => {
+                        let errMsg = 'Application submission could not be processed.';
+                        if (data && data.errors && data.errors.length > 0) {
+                            errMsg = data.errors.map(err => err.message).join(', ');
+                        }
+                        throw new Error(errMsg);
+                    });
+                }
             })
-            .catch(() => {
-                window.location.href = 'thanks.html';
+            .catch(err => {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                if (feedbackBox) {
+                    feedbackBox.style.display = 'block';
+                    feedbackBox.style.background = '#FFF3F3';
+                    feedbackBox.style.border = '1px solid #D32F2F';
+                    feedbackBox.style.color = '#B71C1C';
+                    feedbackBox.innerHTML = `<strong>Application Notice:</strong> ${err.message || 'We could not reach the server.'}<br><br>
+                    Please email your clinic credentials directly to <a href="mailto:hello@smoothbirth.com?subject=${encodeURIComponent('Practitioner Application - ' + regClinic)}" style="color: #B71C1C; font-weight: 700; text-decoration: underline;">hello@smoothbirth.com</a>.`;
+                } else {
+                    alert('Submission error. Please email hello@smoothbirth.com.');
+                }
             });
         });
     }

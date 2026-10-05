@@ -2,6 +2,8 @@
 *.zip
 lacsite-reference.html
 label pictures/
+private/
+private
 PXL_*.jpg
 1.png
 2.png

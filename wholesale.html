@@ -413,6 +413,7 @@
 
                     <!-- Hidden summary payload for email notification -->
                     <input type="hidden" name="order_summary_json" id="order-summary-json">
+                    <input type="hidden" name="Order_Summary" id="order-summary-formatted">
 
                     <!-- Section 3: Acknowledgment -->
                     <h3 style="font-size: 1.3rem; margin-bottom: 1rem; color: var(--primary-dark);">Section 3: Acknowledgment &amp; Special Instructions</h3>
@@ -428,6 +429,8 @@
                             <strong>I understand that submitting this form is an order request.</strong> Smooth Birth Apothecary will email a secure invoice for the products and bulk shipping costs (free for orders over $250). Orders are fulfilled and shipped directly from our manufacturing partner upon payment.
                         </label>
                     </div>
+
+                    <div id="order-form-feedback" style="display: none; margin-bottom: 1rem; padding: 1rem 1.2rem; border-radius: 4px; font-size: 0.88rem; line-height: 1.5;"></div>
 
                     <button type="submit" class="btn-primary" id="order-submit-btn" style="width: 100%; padding: 1.2rem; font-size: 0.9rem;">
                         Submit Wholesale Order Request &rarr;
@@ -491,6 +494,8 @@
                         <label for="reg-notes" style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.3rem;">Tell us about your practice or tincture needs (Optional)</label>
                         <textarea id="reg-notes" name="notes" rows="3" placeholder="Approximate number of births attended per month, home birth vs birth center, etc." style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-light); border-radius: 4px; font-family: var(--font-sans);"></textarea>
                     </div>
+
+                    <div id="reg-form-feedback" style="display: none; margin-bottom: 1rem; padding: 1rem 1.2rem; border-radius: 4px; font-size: 0.88rem; line-height: 1.5;"></div>
 
                     <button type="submit" class="btn-primary" id="reg-submit-btn" style="width: 100%; padding: 1.1rem; font-size: 0.9rem;">
                         Submit Practitioner Application &rarr;
