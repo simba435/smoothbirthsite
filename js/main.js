@@ -8,6 +8,8 @@ window.SMOOTH_BIRTH_CONFIG = {
     // Active Formspree Form endpoint
     formspreeOrderEndpoint: "https://formspree.io/f/xbglpwbe",
     formspreeRegEndpoint: "https://formspree.io/f/xbglpwbe",
+    // Cloudflare Turnstile Site Key
+    turnstileSiteKey: "0x4AAAAAAFUz1RMAT1FQIPVT",
     // Paste your Clerk Publishable Key here when ready (e.g. "pk_test_...")
     clerkPublishableKey: ""
 };
@@ -370,12 +372,22 @@ document.addEventListener('DOMContentLoaded', () => {
             const shippingAddress = (document.getElementById('order-address')?.value || '').trim();
             const notes = (document.getElementById('order-notes')?.value || '').trim();
 
+            // Verify Cloudflare Turnstile token if widget is present
+            const turnstileResponse = orderForm.querySelector('[name="cf-turnstile-response"]')?.value;
+            if (orderForm.querySelector('.cf-turnstile') && !turnstileResponse) {
+                alert('Please complete the security check before submitting your order.');
+                return;
+            }
+
             submitBtn.textContent = 'Submitting Order Request...';
             submitBtn.disabled = true;
 
             // Build clean submission payload omitting zero-quantity rows so email is clean
             const payload = new FormData();
             payload.append('form_type', 'Wholesale Master Order');
+            if (turnstileResponse) {
+                payload.append('cf-turnstile-response', turnstileResponse);
+            }
             payload.append('_subject', `New Wholesale Order: ${clinicName || 'Clinic'} (${totalQty} bottles - ${summaryGrandTotal.textContent})`);
             payload.append('_replyto', contactEmail);
             payload.append('clinic_name', clinicName);
@@ -428,6 +440,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             })
             .catch(err => {
+                if (window.turnstile) {
+                    try { window.turnstile.reset(); } catch (e) {}
+                }
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;
                 if (feedbackBox) {
@@ -470,6 +485,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const regClinic = (document.getElementById('reg-clinic')?.value || '').trim();
             const regEmail = (document.getElementById('reg-email')?.value || '').trim();
 
+            // Verify Cloudflare Turnstile token if widget is present
+            const turnstileResponse = registerForm.querySelector('[name="cf-turnstile-response"]')?.value;
+            if (registerForm.querySelector('.cf-turnstile') && !turnstileResponse) {
+                alert('Please complete the security check before submitting your application.');
+                return;
+            }
+
             submitBtn.textContent = 'Submitting Application...';
             submitBtn.disabled = true;
 
@@ -498,6 +520,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             })
             .catch(err => {
+                if (window.turnstile) {
+                    try { window.turnstile.reset(); } catch (e) {}
+                }
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;
                 if (feedbackBox) {

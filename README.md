@@ -97,12 +97,34 @@ To receive order and registration submissions directly to your email:
    window.SMOOTH_BIRTH_CONFIG = {
        formspreeOrderEndpoint: "https://formspree.io/f/xbglpwbe",
        formspreeRegEndpoint: "https://formspree.io/f/xbglpwbe",
+       turnstileSiteKey: "0x4AAAAAAFUz1RMAT1FQIPVT",
        clerkPublishableKey: ""
    };
    ```
 4. Commit and push:
    ```bash
    git add js/main.js
-   git commit -m "Configure Formspree endpoint"
+   git commit -m "Configure Formspree endpoint and Turnstile"
    git push origin main
    ```
+
+---
+
+## 🛡️ Cloudflare Turnstile Spam Protection
+
+The Wholesale Order Form and Practitioner Registration Form are protected against bot spam via **Cloudflare Turnstile**:
+1. **Site Key**: `0x4AAAAAAFUz1RMAT1FQIPVT` (configured in `wholesale.html` and `js/main.js`).
+2. **Formspree Backend Verification**:
+   - In the Formspree Dashboard for form `xbglpwbe`, go to **Settings → CAPTCHA / Spam Protection**.
+   - Select **Cloudflare Turnstile** and paste your Cloudflare **Secret Key**.
+   - Formspree automatically verifies the `cf-turnstile-response` token sent with each order/application request.
+
+---
+
+## 👥 Multi-User Shared Workspace Setup
+
+On this local machine, this project is located in `/Users/Shared/smoothbirthsite` so both `eunhyeshim` and `duncanmcnaught` can work on the same repository with group write access (`staff`).
+```bash
+git config --global --add safe.directory /Users/Shared/smoothbirthsite
+git config core.fileMode false
+```

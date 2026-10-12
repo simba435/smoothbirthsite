@@ -22,6 +22,9 @@
 
     <!-- Stylesheet -->
     <link rel="stylesheet" href="css/style.css">
+
+    <!-- Cloudflare Turnstile -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body class="bg-light">
 
@@ -430,6 +433,11 @@
                         </label>
                     </div>
 
+                    <!-- Cloudflare Turnstile Spam Protection -->
+                    <div style="margin: 1.5rem 0; display: flex; justify-content: center;">
+                        <div class="cf-turnstile" data-sitekey="0x4AAAAAAFUz1RMAT1FQIPVT" data-theme="light"></div>
+                    </div>
+
                     <div id="order-form-feedback" style="display: none; margin-bottom: 1rem; padding: 1rem 1.2rem; border-radius: 4px; font-size: 0.88rem; line-height: 1.5;"></div>
 
                     <button type="submit" class="btn-primary" id="order-submit-btn" style="width: 100%; padding: 1.2rem; font-size: 0.9rem;">
@@ -493,6 +501,11 @@
                     <div class="form-group" style="margin-bottom: 2rem;">
                         <label for="reg-notes" style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.3rem;">Tell us about your practice or tincture needs (Optional)</label>
                         <textarea id="reg-notes" name="notes" rows="3" placeholder="Approximate number of births attended per month, home birth vs birth center, etc." style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-light); border-radius: 4px; font-family: var(--font-sans);"></textarea>
+                    </div>
+
+                    <!-- Cloudflare Turnstile Spam Protection -->
+                    <div style="margin: 1.5rem 0; display: flex; justify-content: center;">
+                        <div class="cf-turnstile" data-sitekey="0x4AAAAAAFUz1RMAT1FQIPVT" data-theme="light"></div>
                     </div>
 
                     <div id="reg-form-feedback" style="display: none; margin-bottom: 1rem; padding: 1rem 1.2rem; border-radius: 4px; font-size: 0.88rem; line-height: 1.5;"></div>
