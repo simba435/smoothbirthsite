@@ -304,6 +304,16 @@ const PRODUCTS_DATA = {
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
 
+    function escapeHTML(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
     /* -----------------------------------------------------------
      * 1. Navigation Scroll Effect & Mobile Hamburger
      * ----------------------------------------------------------- */
@@ -878,7 +888,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     feedbackBox.style.background = '#FFF3F3';
                     feedbackBox.style.border = '1px solid #D32F2F';
                     feedbackBox.style.color = '#B71C1C';
-                    feedbackBox.innerHTML = `<strong>Order Submission Notice:</strong> ${err.message || 'We could not reach the order server.'}<br><br>
+                    const safeMsg = escapeHTML(err.message || 'We could not reach the order server.');
+                    feedbackBox.innerHTML = `<strong>Order Submission Notice:</strong> ${safeMsg}<br><br>
                     Please email your dispensary order directly to <a href="mailto:hello@smoothbirth.com" style="color: #B71C1C; font-weight: 700; text-decoration: underline;">hello@smoothbirth.com</a>.`;
                 } else {
                     alert('Submission error. Please email your order to hello@smoothbirth.com.');
@@ -946,7 +957,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     feedbackBox.style.background = '#FFF3F3';
                     feedbackBox.style.border = '1px solid #D32F2F';
                     feedbackBox.style.color = '#B71C1C';
-                    feedbackBox.innerHTML = `<strong>Application Notice:</strong> ${err.message || 'We could not reach the server.'}<br><br>
+                    const safeMsg = escapeHTML(err.message || 'We could not reach the server.');
+                    feedbackBox.innerHTML = `<strong>Application Notice:</strong> ${safeMsg}<br><br>
                     Please email your credentials directly to <a href="mailto:hello@smoothbirth.com" style="color: #B71C1C; font-weight: 700; text-decoration: underline;">hello@smoothbirth.com</a>.`;
                 }
             });
