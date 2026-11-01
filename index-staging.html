@@ -267,6 +267,322 @@
             border: 1px solid rgba(0, 0, 0, 0.07) !important;
             color: var(--text-light) !important;
         }
+
+        /* ========================================================
+           Brand Natural Label Stripe Color-Coding
+           - Birth Prep: #CFB79B (Warm Sand/Beige)
+           - Pregnancy Support: #1CABB0 (Deep Teal)
+           - Postpartum: #E9A34D (Earth Gold/Amber)
+           - Labor Support: #9A719D (Apothecary Purple)
+           ======================================================== */
+        :root {
+            --color-pregnancy: #1CABB0;
+            --color-pregnancy-dark: #0E777B;
+            --color-pregnancy-bg: rgba(28, 171, 176, 0.06);
+            --color-pregnancy-border: rgba(28, 171, 176, 0.35);
+
+            --color-birthprep: #CFB79B;
+            --color-birthprep-dark: #8F6D47;
+            --color-birthprep-bg: rgba(207, 183, 155, 0.14);
+            --color-birthprep-border: rgba(207, 183, 155, 0.5);
+
+            --color-laborsupport: #9A719D;
+            --color-laborsupport-dark: #744A77;
+            --color-laborsupport-bg: rgba(154, 113, 157, 0.06);
+            --color-laborsupport-border: rgba(154, 113, 157, 0.35);
+
+            --color-postpartum: #E9A34D;
+            --color-postpartum-dark: #B06813;
+            --color-postpartum-bg: rgba(233, 163, 77, 0.07);
+            --color-postpartum-border: rgba(233, 163, 77, 0.4);
+        }
+
+        /* Scope Variables Per Category Theme */
+        .cat-theme-pregnancy {
+            --line-color: var(--color-pregnancy);
+            --line-dark: var(--color-pregnancy-dark);
+            --line-light: var(--color-pregnancy-bg);
+            --line-border: var(--color-pregnancy-border);
+            --line-shadow: rgba(28, 171, 176, 0.16);
+        }
+
+        .cat-theme-birthprep {
+            --line-color: var(--color-birthprep);
+            --line-dark: var(--color-birthprep-dark);
+            --line-light: var(--color-birthprep-bg);
+            --line-border: var(--color-birthprep-border);
+            --line-shadow: rgba(207, 183, 155, 0.22);
+        }
+
+        .cat-theme-laborsupport {
+            --line-color: var(--color-laborsupport);
+            --line-dark: var(--color-laborsupport-dark);
+            --line-light: var(--color-laborsupport-bg);
+            --line-border: var(--color-laborsupport-border);
+            --line-shadow: rgba(154, 113, 157, 0.16);
+        }
+
+        .cat-theme-postpartum {
+            --line-color: var(--color-postpartum);
+            --line-dark: var(--color-postpartum-dark);
+            --line-light: var(--color-postpartum-bg);
+            --line-border: var(--color-postpartum-border);
+            --line-shadow: rgba(233, 163, 77, 0.18);
+        }
+
+        /* Category Accordion Container & Dynamic Shift */
+        .category-accordion-item {
+            background: #FFFFFF !important;
+            border: 1px solid rgba(0, 0, 0, 0.08) !important;
+            border-left: 5px solid var(--line-color) !important;
+            border-radius: 8px !important;
+            margin-bottom: 2.2rem !important;
+            overflow: hidden !important;
+            transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+        }
+
+        .category-accordion-item:hover {
+            border-color: var(--line-color) !important;
+            box-shadow: 0 10px 32px var(--line-shadow) !important;
+        }
+
+        .category-accordion-item.open {
+            border-color: var(--line-color) !important;
+            box-shadow: 0 14px 40px var(--line-shadow) !important;
+        }
+
+        .category-accordion-header {
+            background: #FAFAFA !important;
+            padding: 1.8rem 2.2rem !important;
+            transition: all 0.3s ease !important;
+            border-bottom: 1px solid transparent !important;
+        }
+
+        .category-accordion-header:hover {
+            background: var(--line-light) !important;
+        }
+
+        .category-accordion-item.open .category-accordion-header {
+            background: var(--line-light) !important;
+            border-bottom: 1px solid var(--line-border) !important;
+        }
+
+        .category-accordion-item .cat-phase-badge {
+            color: var(--line-dark) !important;
+            background: var(--line-light) !important;
+            border: 1px solid var(--line-border) !important;
+            padding: 0.28rem 0.85rem !important;
+            border-radius: 20px !important;
+            font-weight: 600 !important;
+            letter-spacing: 1.5px !important;
+            display: inline-block !important;
+            transition: all 0.25s ease !important;
+        }
+
+        .category-accordion-item:hover .cat-phase-badge,
+        .category-accordion-item.open .cat-phase-badge {
+            background: #FFFFFF !important;
+            border-color: var(--line-color) !important;
+            color: var(--line-dark) !important;
+            box-shadow: 0 2px 8px var(--line-shadow) !important;
+        }
+
+        .category-accordion-item .cat-chevron {
+            border: 1px solid var(--line-border) !important;
+            color: var(--line-dark) !important;
+            background: #FFFFFF !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .category-accordion-item.open .cat-chevron {
+            background: var(--line-color) !important;
+            border-color: var(--line-color) !important;
+            color: #FFFFFF !important;
+            box-shadow: 0 2px 10px var(--line-shadow) !important;
+        }
+
+        /* Product Cards Color Accent */
+        .category-accordion-item .product-card {
+            background: #FFFFFF !important;
+            border: 1px solid rgba(0, 0, 0, 0.07) !important;
+            border-top: 3px solid var(--line-color) !important;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+        }
+
+        .category-accordion-item .product-card:hover {
+            border-color: var(--line-color) !important;
+            box-shadow: 0 12px 32px var(--line-shadow) !important;
+            transform: translateY(-3px) !important;
+        }
+
+        .category-accordion-item .product-subtitle {
+            color: var(--line-dark) !important;
+            font-weight: 500 !important;
+        }
+
+        .category-accordion-item .badge-tag.tag-timing {
+            background: var(--line-light) !important;
+            color: var(--line-dark) !important;
+            border: 1px solid var(--line-border) !important;
+        }
+
+        .category-accordion-item .quick-dosage-pill {
+            background: var(--line-light) !important;
+            border: 1px dashed var(--line-border) !important;
+        }
+
+        .category-accordion-item .quick-dosage-pill strong {
+            color: var(--line-dark) !important;
+        }
+
+        /* Buttons & Dynamic State */
+        .category-accordion-item .view-details-btn {
+            background: #FFFFFF !important;
+            color: var(--line-dark) !important;
+            border: 1px solid var(--line-border) !important;
+            transition: all 0.25s ease !important;
+        }
+
+        .category-accordion-item .view-details-btn:hover {
+            background: var(--line-color) !important;
+            border-color: var(--line-color) !important;
+            color: #FFFFFF !important;
+            box-shadow: 0 4px 14px var(--line-shadow) !important;
+        }
+
+        /* Formula Wisdom Panel */
+        .category-accordion-item .tcm-callout {
+            border-left: 3px solid var(--line-color) !important;
+            background: var(--line-light) !important;
+        }
+
+        .category-accordion-item .tcm-callout strong {
+            color: var(--line-dark) !important;
+        }
+
+        .category-accordion-item .ingredient-chip {
+            border: 1px solid var(--line-border) !important;
+            background: #FFFFFF !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .category-accordion-item .ingredient-chip:hover {
+            background: var(--line-light) !important;
+            border-color: var(--line-color) !important;
+            color: var(--line-dark) !important;
+        }
+
+        .category-accordion-item .faq-question:hover {
+            color: var(--line-dark) !important;
+        }
+
+        .category-accordion-item .faq-item.active .faq-question {
+            color: var(--line-dark) !important;
+        }
+
+        .category-accordion-item .faq-item.active .faq-chevron {
+            color: var(--line-color) !important;
+        }
+
+        /* Color Dot Component */
+        .color-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+            vertical-align: middle;
+            transition: transform 0.2s ease;
+        }
+
+        .cat-tab-btn:hover .color-dot {
+            transform: scale(1.35);
+        }
+
+        /* Category Filter Nav Tabs */
+        .cat-tab-btn {
+            transition: all 0.25s ease !important;
+        }
+
+        .cat-tab-btn[data-filter="all"].active {
+            background: var(--primary-dark) !important;
+            border-color: var(--primary-dark) !important;
+            color: #FFFFFF !important;
+            box-shadow: 0 4px 14px rgba(45, 62, 48, 0.25) !important;
+        }
+
+        .cat-tab-btn[data-filter="cat-pregnancy"]:hover {
+            border-color: #1CABB0 !important;
+            color: #0E777B !important;
+            background: rgba(28, 171, 176, 0.08) !important;
+        }
+        .cat-tab-btn[data-filter="cat-pregnancy"].active {
+            background: #1CABB0 !important;
+            border-color: #1CABB0 !important;
+            color: #FFFFFF !important;
+            box-shadow: 0 4px 18px rgba(28, 171, 176, 0.35) !important;
+        }
+
+        .cat-tab-btn[data-filter="cat-birthprep"]:hover {
+            border-color: #CFB79B !important;
+            color: #8F6D47 !important;
+            background: rgba(207, 183, 155, 0.16) !important;
+        }
+        .cat-tab-btn[data-filter="cat-birthprep"].active {
+            background: #CFB79B !important;
+            border-color: #CFB79B !important;
+            color: #FFFFFF !important;
+            box-shadow: 0 4px 18px rgba(207, 183, 155, 0.38) !important;
+        }
+
+        .cat-tab-btn[data-filter="cat-laborsupport"]:hover {
+            border-color: #9A719D !important;
+            color: #744A77 !important;
+            background: rgba(154, 113, 157, 0.08) !important;
+        }
+        .cat-tab-btn[data-filter="cat-laborsupport"].active {
+            background: #9A719D !important;
+            border-color: #9A719D !important;
+            color: #FFFFFF !important;
+            box-shadow: 0 4px 18px rgba(154, 113, 157, 0.35) !important;
+        }
+
+        .cat-tab-btn[data-filter="cat-postpartum"]:hover {
+            border-color: #E9A34D !important;
+            color: #B06813 !important;
+            background: rgba(233, 163, 77, 0.09) !important;
+        }
+        .cat-tab-btn[data-filter="cat-postpartum"].active {
+            background: #E9A34D !important;
+            border-color: #E9A34D !important;
+            color: #FFFFFF !important;
+            box-shadow: 0 4px 18px rgba(233, 163, 77, 0.35) !important;
+        }
+
+        /* Dropdown Navigation Menu Links */
+        .dropdown-menu li a[href*="cat-pregnancy"]:hover {
+            color: #0E777B !important;
+            background: rgba(28, 171, 176, 0.08) !important;
+            border-left: 3px solid #1CABB0 !important;
+        }
+
+        .dropdown-menu li a[href*="cat-birthprep"]:hover {
+            color: #8F6D47 !important;
+            background: rgba(207, 183, 155, 0.16) !important;
+            border-left: 3px solid #CFB79B !important;
+        }
+
+        .dropdown-menu li a[href*="cat-laborsupport"]:hover {
+            color: #744A77 !important;
+            background: rgba(154, 113, 157, 0.08) !important;
+            border-left: 3px solid #9A719D !important;
+        }
+
+        .dropdown-menu li a[href*="cat-postpartum"]:hover {
+            color: #B06813 !important;
+            background: rgba(233, 163, 77, 0.09) !important;
+            border-left: 3px solid #E9A34D !important;
+        }
     </style>
 </head>
 <body>
@@ -295,10 +611,10 @@
                 <li class="nav-item-dropdown">
                     <a href="#tinctures">Smooth Birth Tinctures <span class="caret">▾</span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#cat-pregnancy" onclick="window.openCategoryAccordion && window.openCategoryAccordion('pregnancy')">Pregnancy Support</a></li>
-                        <li><a href="#cat-birthprep" onclick="window.openCategoryAccordion && window.openCategoryAccordion('prep')">Birth Prep</a></li>
-                        <li><a href="#cat-laborsupport" onclick="window.openCategoryAccordion && window.openCategoryAccordion('labor')">Labor Support</a></li>
-                        <li><a href="#cat-postpartum" onclick="window.openCategoryAccordion && window.openCategoryAccordion('postpartum')">Postpartum Recovery</a></li>
+                        <li><a href="#cat-pregnancy" onclick="window.openCategoryAccordion && window.openCategoryAccordion('pregnancy')"><span class="color-dot" style="background: #1CABB0;"></span> Pregnancy Support</a></li>
+                        <li><a href="#cat-birthprep" onclick="window.openCategoryAccordion && window.openCategoryAccordion('prep')"><span class="color-dot" style="background: #CFB79B;"></span> Birth Prep</a></li>
+                        <li><a href="#cat-laborsupport" onclick="window.openCategoryAccordion && window.openCategoryAccordion('labor')"><span class="color-dot" style="background: #9A719D;"></span> Labor Support</a></li>
+                        <li><a href="#cat-postpartum" onclick="window.openCategoryAccordion && window.openCategoryAccordion('postpartum')"><span class="color-dot" style="background: #E9A34D;"></span> Postpartum Recovery</a></li>
                     </ul>
                 </li>
                 <li><a href="wholesale-staging.html" class="btn-primary">Wholesale Portal</a></li>
@@ -364,16 +680,24 @@
             <!-- Category Filter Tabs -->
             <div class="category-filter-nav reveal">
                 <button class="cat-tab-btn active" data-filter="all">All Formulas (10)</button>
-                <button class="cat-tab-btn" data-filter="cat-pregnancy">Phase 1: Pregnancy Support (4)</button>
-                <button class="cat-tab-btn" data-filter="cat-birthprep">Phase 2: Birth Prep (2)</button>
-                <button class="cat-tab-btn" data-filter="cat-laborsupport">Phase 3: Labor Support (3)</button>
-                <button class="cat-tab-btn" data-filter="cat-postpartum">Phase 4: Postpartum (1)</button>
+                <button class="cat-tab-btn" data-filter="cat-pregnancy">
+                    <span class="color-dot" style="background: #1CABB0;"></span> Phase 1: Pregnancy Support (4)
+                </button>
+                <button class="cat-tab-btn" data-filter="cat-birthprep">
+                    <span class="color-dot" style="background: #CFB79B;"></span> Phase 2: Birth Prep (2)
+                </button>
+                <button class="cat-tab-btn" data-filter="cat-laborsupport">
+                    <span class="color-dot" style="background: #9A719D;"></span> Phase 3: Labor Support (3)
+                </button>
+                <button class="cat-tab-btn" data-filter="cat-postpartum">
+                    <span class="color-dot" style="background: #E9A34D;"></span> Phase 4: Postpartum (1)
+                </button>
             </div>
 
             <!-- ============================================
-                 CATEGORY 1: PREGNANCY SUPPORT
+                 CATEGORY 1: PREGNANCY SUPPORT (#1CABB0 Deep Teal)
                  ============================================ -->
-            <div class="category-accordion-item open" id="cat-pregnancy">
+            <div class="category-accordion-item cat-theme-pregnancy open" id="cat-pregnancy">
                 <div class="category-accordion-header">
                     <div class="cat-header-left">
                         <span class="cat-phase-badge">Phase 1 · Trimesters 1, 2 &amp; 3</span>
@@ -625,9 +949,9 @@
             </div>
 
             <!-- ============================================
-                 CATEGORY 2: BIRTH PREP
+                 CATEGORY 2: BIRTH PREP (#CFB79B Warm Sand/Beige)
                  ============================================ -->
-            <div class="category-accordion-item open" id="cat-birthprep">
+            <div class="category-accordion-item cat-theme-birthprep open" id="cat-birthprep">
                 <div class="category-accordion-header">
                     <div class="cat-header-left">
                         <span class="cat-phase-badge">Phase 2 · 37 Weeks &amp; Beyond</span>
@@ -750,9 +1074,9 @@
             </div>
 
             <!-- ============================================
-                 CATEGORY 3: LABOR SUPPORT
+                 CATEGORY 3: LABOR SUPPORT (#9A719D Apothecary Purple)
                  ============================================ -->
-            <div class="category-accordion-item open" id="cat-laborsupport">
+            <div class="category-accordion-item cat-theme-laborsupport open" id="cat-laborsupport">
                 <div class="category-accordion-header">
                     <div class="cat-header-left">
                         <span class="cat-phase-badge">Phase 3 · Active Labor Tools</span>
@@ -931,9 +1255,9 @@
             </div>
 
             <!-- ============================================
-                 CATEGORY 4: POSTPARTUM RECOVERY
+                 CATEGORY 4: POSTPARTUM RECOVERY (#E9A34D Earth Gold/Amber)
                  ============================================ -->
-            <div class="category-accordion-item open" id="cat-postpartum">
+            <div class="category-accordion-item cat-theme-postpartum open" id="cat-postpartum">
                 <div class="category-accordion-header">
                     <div class="cat-header-left">
                         <span class="cat-phase-badge">Phase 4 · Fourth Trimester Healing</span>
@@ -1114,5 +1438,47 @@
 
     <!-- Scripts -->
     <script src="js/main.js"></script>
+
+    <!-- Dynamic Product Line Accent Interaction Handler -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const lineColors = {
+                'cat-pregnancy': { color: '#1CABB0', dark: '#0E777B', bg: 'rgba(28, 171, 176, 0.08)' },
+                'cat-birthprep': { color: '#CFB79B', dark: '#8F6D47', bg: 'rgba(207, 183, 155, 0.16)' },
+                'cat-laborsupport': { color: '#9A719D', dark: '#744A77', bg: 'rgba(154, 113, 157, 0.08)' },
+                'cat-postpartum': { color: '#E9A34D', dark: '#B06813', bg: 'rgba(233, 163, 77, 0.09)' }
+            };
+
+            const accordionItems = document.querySelectorAll('.category-accordion-item');
+            const tabButtons = document.querySelectorAll('.cat-tab-btn');
+
+            // Interactive state synchronization on accordion expand/collapse
+            accordionItems.forEach(item => {
+                const header = item.querySelector('.category-accordion-header');
+                if (header) {
+                    header.addEventListener('click', () => {
+                        const line = lineColors[item.id];
+                        if (line && item.classList.contains('open')) {
+                            item.style.setProperty('--line-color', line.color);
+                            item.style.setProperty('--line-dark', line.dark);
+                        }
+                    });
+                }
+            });
+
+            // Synchronize active tab styling with dynamic color accents
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const targetId = btn.getAttribute('data-filter');
+                    const targetAccordion = document.getElementById(targetId);
+                    if (targetAccordion && lineColors[targetId]) {
+                        const line = lineColors[targetId];
+                        targetAccordion.style.setProperty('--line-color', line.color);
+                        targetAccordion.style.setProperty('--line-dark', line.dark);
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
