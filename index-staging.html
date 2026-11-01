@@ -24,6 +24,250 @@
 
     <!-- Stylesheet -->
     <link rel="stylesheet" href="css/style.css">
+
+    <!-- Soft Clinical Off-White Theme (#FAFAFA) -->
+    <style id="clinical-offwhite-theme">
+        :root {
+            --bg-light: #FAFAFA;
+            --bg-white: #FAFAFA;
+            --bg-cream: #FAFAFA;
+            --bg-warm: #FAFAFA;
+        }
+
+        /* 1. Global & Page Background */
+        body, html {
+            background-color: #FAFAFA !important;
+            color: var(--text-body);
+        }
+
+        .section,
+        .section.bg-light,
+        .bg-light,
+        .bg-cream {
+            background-color: #FAFAFA !important;
+        }
+
+        /* 2. Top Notice Bar */
+        .top-notice-bar {
+            background-color: #FAFAFA !important;
+            border-bottom: 1px solid rgba(184, 149, 106, 0.25) !important;
+        }
+
+        /* 3. Header & Navigation */
+        .navbar {
+            background: rgba(250, 250, 250, 0.95) !important;
+            backdrop-filter: blur(12px) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03) !important;
+        }
+
+        .navbar .logo {
+            color: var(--primary-dark) !important;
+        }
+
+        .navbar .logo span {
+            color: var(--gold) !important;
+        }
+
+        .navbar .nav-links a:not(.btn-primary) {
+            color: var(--text-dark) !important;
+        }
+
+        .navbar .nav-links a:hover:not(.btn-primary) {
+            color: var(--primary) !important;
+        }
+
+        .navbar .caret {
+            color: var(--gold-dark) !important;
+        }
+
+        .navbar .hamburger .bar {
+            background-color: var(--primary-dark) !important;
+        }
+
+        .dropdown-menu {
+            background: #FFFFFF !important;
+            border: 1px solid rgba(0, 0, 0, 0.08) !important;
+            box-shadow: var(--shadow-md) !important;
+        }
+
+        /* 4. Hero Section - Soft Clinical Off-White replacing dark section */
+        .hero {
+            background: #FAFAFA !important;
+            min-height: auto !important;
+            padding-top: 155px !important;
+            padding-bottom: 75px !important;
+        }
+
+        .hero-bg,
+        .hero-bg::before,
+        .hero::after {
+            display: none !important;
+        }
+
+        .hero-content {
+            color: var(--text-dark) !important;
+        }
+
+        .hero .subtitle {
+            color: var(--primary-dark) !important;
+            font-weight: 500 !important;
+            letter-spacing: 4px !important;
+            opacity: 1 !important;
+        }
+
+        .hero .title {
+            color: var(--text-dark) !important;
+            font-weight: 400 !important;
+        }
+
+        .hero .title-credential {
+            color: var(--gold-dark) !important;
+            opacity: 0.9 !important;
+            letter-spacing: 3px !important;
+        }
+
+        .hero .description {
+            color: var(--text-body) !important;
+            opacity: 1 !important;
+            font-size: 1.15rem !important;
+        }
+
+        .hero-showcase {
+            background: #FAFAFA !important;
+            border: 1px solid rgba(184, 149, 106, 0.3) !important;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.06) !important;
+            margin-top: 3rem !important;
+        }
+
+        .mouse {
+            border-color: rgba(94, 127, 101, 0.45) !important;
+        }
+
+        .mouse::before {
+            background: var(--primary) !important;
+        }
+
+        /* 5. Intro Section Callout */
+        .intro-callout {
+            background: #FFFFFF !important;
+            border: 1px solid rgba(0, 0, 0, 0.06) !important;
+            border-left: 3px solid var(--gold) !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03) !important;
+        }
+
+        /* 6. Tinctures Section - Tabs & Accordions */
+        .cat-tab-btn {
+            background: #FFFFFF !important;
+            border: 1px solid rgba(0, 0, 0, 0.09) !important;
+            color: var(--text-dark) !important;
+        }
+
+        .cat-tab-btn:hover {
+            border-color: var(--gold) !important;
+            background: #F4F6F4 !important;
+        }
+
+        .cat-tab-btn.active {
+            background: var(--primary) !important;
+            color: #FFFFFF !important;
+            border-color: var(--primary) !important;
+        }
+
+        .category-accordion-item {
+            background: #FFFFFF !important;
+            border: 1px solid rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02) !important;
+        }
+
+        .category-accordion-header {
+            background: #FAFAFA !important;
+        }
+
+        .category-accordion-item.open .category-accordion-header {
+            background: #F2F5F3 !important;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+        }
+
+        .product-card {
+            background: #FFFFFF !important;
+            border: 1px solid rgba(0, 0, 0, 0.07) !important;
+        }
+
+        .product-card:hover {
+            border-color: var(--gold) !important;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06) !important;
+        }
+
+        .product-label-img-wrap {
+            background: #FAFAFA !important;
+        }
+
+        .quick-dosage-pill {
+            background: #FAFAFA !important;
+            border-color: rgba(184, 149, 106, 0.4) !important;
+        }
+
+        .view-details-btn {
+            background: #FAFAFA !important;
+            border-color: rgba(0, 0, 0, 0.08) !important;
+        }
+
+        .view-details-btn:hover {
+            background: var(--primary) !important;
+            color: #FFFFFF !important;
+        }
+
+        /* 7. Founder Bio Section */
+        .credential-tag {
+            background: #FFFFFF !important;
+            border: 1px solid rgba(184, 149, 106, 0.35) !important;
+        }
+
+        /* 8. Wholesale Teaser Section */
+        #wholesale-teaser {
+            background: #FAFAFA !important;
+            border-top: 1px solid rgba(184, 149, 106, 0.25) !important;
+        }
+
+        .specialty-card {
+            background: #FFFFFF !important;
+            border: 1px solid rgba(0, 0, 0, 0.07) !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03) !important;
+        }
+
+        /* 9. Footer - Soft Clinical Off-White replacing dark section */
+        .footer {
+            background-color: #FAFAFA !important;
+            color: var(--text-body) !important;
+            border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+            padding: 4rem 0 3rem !important;
+        }
+
+        .footer p {
+            color: var(--text-body) !important;
+        }
+
+        .footer a {
+            color: var(--primary-dark) !important;
+        }
+
+        .footer a:hover {
+            color: var(--primary) !important;
+        }
+
+        .footer-divider {
+            background: var(--gold) !important;
+            opacity: 0.3 !important;
+        }
+
+        .fda-disclaimer {
+            background: rgba(0, 0, 0, 0.025) !important;
+            border: 1px solid rgba(0, 0, 0, 0.07) !important;
+            color: var(--text-light) !important;
+        }
+    </style>
 </head>
 <body>
     <!-- STAGING_BANNER_START -->
@@ -34,7 +278,7 @@
     <!-- STAGING_BANNER_END -->
 
     <!-- Top Notice Bar for Practitioners -->
-    <div style="background: var(--bg-cream); border-bottom: 1px solid var(--border-gold); padding: 0.5rem 1rem; text-align: center; font-size: 0.78rem; letter-spacing: 0.5px;">
+    <div class="top-notice-bar" style="background: #FAFAFA; border-bottom: 1px solid rgba(184, 149, 106, 0.25); padding: 0.5rem 1rem; text-align: center; font-size: 0.78rem; letter-spacing: 0.5px;">
         <span>Are you a Midwife, Doula, or Birth Clinic?</span>
         <a href="wholesale-staging.html" style="font-weight: 600; color: var(--primary-dark); text-decoration: underline; margin-left: 0.5rem;">Access the Wholesale Practitioner Portal &rarr;</a>
     </div>
@@ -799,7 +1043,7 @@
     </section>
 
     <!-- Wholesale Portal Gateway Section -->
-    <section class="section" id="wholesale-teaser" style="background: linear-gradient(180deg, var(--bg-white) 0%, var(--bg-cream) 100%); border-top: 1px solid var(--border-gold);">
+    <section class="section" id="wholesale-teaser" style="background: #FAFAFA; border-top: 1px solid rgba(184, 149, 106, 0.25);">
         <div class="container" style="text-align: center;">
             <div class="section-header reveal" style="margin-bottom: 2rem;">
                 <span class="section-subtitle">For Midwives, Doulas &amp; Birth Centers</span>
