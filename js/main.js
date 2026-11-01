@@ -428,7 +428,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(res => {
                 if (res.ok) {
-                    window.location.href = 'thanks.html';
+                    window.location.href = window.location.pathname.includes('-staging') ? 'thanks-staging.html' : 'thanks.html';
                 } else {
                     return res.json().then(data => {
                         let errMsg = 'There was an issue processing your order submission.';
@@ -508,7 +508,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(res => {
                 if (res.ok) {
-                    window.location.href = 'thanks.html';
+                    window.location.href = window.location.pathname.includes('-staging') ? 'thanks-staging.html' : 'thanks.html';
                 } else {
                     return res.json().then(data => {
                         let errMsg = 'Application submission could not be processed.';

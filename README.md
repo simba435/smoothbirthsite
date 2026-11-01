@@ -11,12 +11,18 @@ Hosted on **GitHub Pages** with DNS and CDN managed via **Cloudflare**.
 ```
 smoothbirthsite/
 ├── index.html              # Public homepage (Hero, Formula Accordions, Meet Founder, FAQ, FDA Disclaimer)
+├── index-staging.html      # Staging duplicate of index.html
 ├── wholesale.html          # B2B Portal (Live Wholesale Order Calculator, Free Shipping Meter, Registration Form)
+├── wholesale-staging.html  # Staging duplicate of wholesale.html
 ├── thanks.html             # Submission confirmation page
+├── thanks-staging.html     # Staging duplicate of thanks.html
 ├── privacy.html            # Healthcare & B2B Privacy Policy
+├── privacy-staging.html    # Staging duplicate of privacy.html
 ├── terms.html              # Terms of Service & FDA Regulatory Notices
+├── terms-staging.html      # Staging duplicate of terms.html
+├── promote-staging.sh      # Helper script to promote staging changes to production
 ├── CNAME                   # Custom domain pointer: smoothbirth.com
-├── robots.txt              # Search engine crawling rules
+├── robots.txt              # Search engine crawling rules (blocks staging indexing)
 ├── sitemap.xml             # XML sitemap for SEO
 ├── llms.txt                # AI search & LLM indexing manifest
 ├── css/
@@ -118,6 +124,39 @@ The Wholesale Order Form and Practitioner Registration Form are protected agains
    - In the Formspree Dashboard for form `xbglpwbe`, go to **Settings → CAPTCHA / Spam Protection**.
    - Select **Cloudflare Turnstile** and paste your Cloudflare **Secret Key**.
    - Formspree automatically verifies the `cf-turnstile-response` token sent with each order/application request.
+
+---
+
+## 🎭 Staging Environment & Promotion Workflow
+
+The site includes full-fidelity duplicate staging pages ending in `-staging.html` for staging and previewing modifications safely before publishing to production:
+- `https://smoothbirth.com/index-staging.html`
+- `https://smoothbirth.com/wholesale-staging.html`
+- `https://smoothbirth.com/thanks-staging.html`
+- `https://smoothbirth.com/privacy-staging.html`
+- `https://smoothbirth.com/terms-staging.html`
+
+### Key Staging Features:
+- **Noindex Protection**: All staging pages include `<meta name="robots" content="noindex, nofollow">` and are disallowed in `robots.txt` so search engine crawlers will never index duplicate content or affect live SEO.
+- **Closed-Loop Navigation**: All internal links across staging pages automatically route to their sibling `-staging.html` pages.
+- **Staging Header Banner**: Displays an environment badge with a direct link back to the live production page.
+- **Form Submission Routing**: In `js/main.js`, form submission redirects point to `thanks-staging.html` when submitted from a staging page.
+
+### Promoting Staged Changes to Production:
+Use the included `promote-staging.sh` helper to promote individual or all pages with 1 command:
+```bash
+# Promote all 5 staging pages to production
+./promote-staging.sh all
+
+# Or promote an individual page
+./promote-staging.sh index
+./promote-staging.sh wholesale
+```
+The promotion script automatically:
+1. Strips the staging banner and `noindex` meta tags.
+2. Rewrites `-staging.html` links back to clean production URLs.
+3. Removes `[Staging]` from page titles.
+4. Shows a `git diff` preview so you can verify changes before committing.
 
 ---
 
