@@ -20,7 +20,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@300;400;500;600;700&family=Lato:wght@400;700&family=Montserrat:wght@400;500;600&family=Playfair+Display:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
 
     <!-- Stylesheet -->
     <link rel="stylesheet" href="css/style.css">
@@ -32,6 +32,55 @@
             --bg-white: #FAFAFA;
             --bg-cream: #FAFAFA;
             --bg-warm: #FAFAFA;
+
+            /* Web-Font Mappings: Fraunces & Inter */
+            --font-sans: 'Inter', 'Montserrat', 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            --font-serif: 'Fraunces', 'DM Serif Display', 'Playfair Display', Georgia, Cambria, 'Times New Roman', serif;
+        }
+
+        /* Header / Display Typography in Fraunces */
+        h1, h2, h3, h4,
+        .title,
+        .hero .title,
+        .section-title,
+        .cat-title,
+        .product-name,
+        .logo,
+        .logo span,
+        .footer p[style*="font-family"] {
+            font-family: var(--font-serif) !important;
+            font-optical-sizing: auto !important;
+            letter-spacing: -0.015em !important;
+        }
+
+        /* Body / Clinical Typography with High Readability (1.5 - 1.6 Line-Height) */
+        body,
+        p,
+        input,
+        select,
+        textarea,
+        button,
+        .nav-links a,
+        .btn-primary,
+        .cat-tab-btn,
+        .view-details-btn,
+        .ingredient-chip,
+        .quick-dosage-pill,
+        .detail-block,
+        .faq-question,
+        .faq-answer,
+        .tcm-callout,
+        .cat-summary,
+        .product-blurb {
+            font-family: var(--font-sans) !important;
+            line-height: 1.6 !important;
+        }
+
+        .ingredient-chip,
+        .badge-tag,
+        .quick-dosage-pill,
+        .view-details-btn {
+            line-height: 1.5 !important;
         }
 
         /* 1. Global & Page Background */
@@ -587,7 +636,7 @@
 </head>
 <body>
     <!-- STAGING_BANNER_START -->
-    <aside style="background: #233529; color: #E7C970; text-align: center; padding: 0.5rem 1rem; font-size: 0.8rem; font-family: Outfit, sans-serif; letter-spacing: 0.5px; border-bottom: 1px solid rgba(231,201,112,0.35); position: relative; z-index: 1000;">
+    <aside style="background: #233529; color: #E7C970; text-align: center; padding: 0.5rem 1rem; font-size: 0.8rem; font-family: var(--font-sans); letter-spacing: 0.5px; border-bottom: 1px solid rgba(231,201,112,0.35); position: relative; z-index: 1000;">
         <span style="display: inline-block; background: #C5A059; color: #1F2D24; font-weight: 700; font-size: 0.7rem; padding: 0.15rem 0.55rem; border-radius: 3px; margin-right: 0.5rem; text-transform: uppercase; letter-spacing: 1px;">Staging</span>
         You are viewing the <strong>Staging Site</strong> &bull; Changes here are staged for testing before promoting to production &bull; <a href="index.html" style="color: #FFF; text-decoration: underline; margin-left: 0.4rem;">View Live Production Site &rarr;</a>
     </aside>

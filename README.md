@@ -26,7 +26,7 @@ smoothbirthsite/
 ├── sitemap.xml             # XML sitemap for SEO
 ├── llms.txt                # AI search & LLM indexing manifest
 ├── css/
-│   └── style.css           # Custom responsive styles (Sage Green & Warm Gold palette, Playfair/Outfit typography)
+│   └── style.css           # Custom responsive styles (Sage Green & Warm Gold palette, Fraunces/Inter typography)
 ├── js/
 │   └── main.js             # Formula drawers, accordion logic, batch order math, Formspree & Clerk hooks
 └── images/
