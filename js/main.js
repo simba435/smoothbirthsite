@@ -10,8 +10,8 @@ window.SMOOTH_BIRTH_CONFIG = {
     formspreeRegEndpoint: "https://formspree.io/f/xbglpwbe",
     // Cloudflare Turnstile Site Key
     turnstileSiteKey: "0x4AAAAAAFUz1RMAT1FQIPVT",
-    // Paste your Clerk Publishable Key here when ready (e.g. "pk_test_...")
-    clerkPublishableKey: "",
+    // Clerk Publishable Key (Smooth Birth Apothecary app_3LnUVPN9ZVBrm1y0hU7NAKp8hxc)
+    clerkPublishableKey: "pk_test_c3BsZW5kaWQtYmFkZ2VyLTQ1MTIuY2xlcmsuYWNjb3VudHMuZGV2JA",
     // Default dispensary access passcode for approved practitioners
     practitionerPasscode: "smoothbirth"
 };
@@ -661,14 +661,18 @@ document.addEventListener('DOMContentLoaded', () => {
      * 8. Clerk Authentication Integration (Full BaaS Auth & Prefill)
      * ----------------------------------------------------------- */
     if (window.SMOOTH_BIRTH_CONFIG.clerkPublishableKey) {
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js';
-        script.async = true;
-        script.crossOrigin = 'anonymous';
-        script.onload = async () => {
+        const initClerk = async () => {
+            const clerk = window.Clerk;
+            if (!clerk) {
+                // If Clerk SDK is still downloading via script tag, retry shortly
+                setTimeout(initClerk, 60);
+                return;
+            }
+
             try {
-                const clerk = window.Clerk;
-                await clerk.load({ publishableKey: window.SMOOTH_BIRTH_CONFIG.clerkPublishableKey });
+                if (!clerk.loaded) {
+                    await clerk.load({ publishableKey: window.SMOOTH_BIRTH_CONFIG.clerkPublishableKey });
+                }
 
                 const syncClerkAuthState = (user) => {
                     const viewOrder = document.getElementById('view-order');
@@ -781,7 +785,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.warn('Clerk initialization notice:', err);
             }
         };
-        document.head.appendChild(script);
+
+        // Start initialization
+        initClerk();
     }
 
 });
