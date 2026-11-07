@@ -887,17 +887,15 @@
             border-bottom: 1px solid rgba(0, 0, 0, 0.06);
         }
 
-        /* Parallel Horizontal Bottle Row */
+        /* Parallel Horizontal Bottle Grid matching reference */
         .phase-bottles-row {
             display: flex;
-            align-items: flex-end;
+            flex-wrap: wrap;
             justify-content: center;
-            gap: 2.5rem;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            padding: 0.5rem 0.5rem 1.25rem;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: thin;
+            align-items: flex-start;
+            gap: 1.5rem;
+            width: 100%;
+            padding: 0.5rem 0 1.25rem;
         }
 
         .phase-bottle-item {
@@ -905,56 +903,77 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
-            flex: 0 0 auto;
-            width: 170px;
-            transition: all 0.28s ease;
+            flex: 1 1 calc(25% - 1.25rem);
+            max-width: 260px;
+            min-width: 200px;
+            transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
             cursor: pointer;
+            text-decoration: none;
         }
 
         .phase-bottle-item:hover {
-            transform: translateY(-8px);
+            transform: translateY(-5px);
         }
 
         .phase-bottle-img-wrap {
-            width: 140px;
-            height: 270px;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            max-height: 280px;
             display: flex;
-            align-items: flex-end;
+            align-items: center;
             justify-content: center;
-            background: radial-gradient(circle at 50% 68%, rgba(245, 239, 230, 0.8) 0%, rgba(250, 250, 250, 0) 72%);
-            border-radius: 14px;
-            padding: 0.5rem 0.25rem;
-            margin-bottom: 0.85rem;
-            transition: background 0.3s ease;
+            background: #F7F7F7;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            border-radius: 4px;
+            padding: 1.5rem 1.25rem;
+            margin-bottom: 0.95rem;
+            transition: all 0.28s ease;
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
         }
 
-        .phase-accordion-bar:hover .phase-bottle-img-wrap {
-            background: radial-gradient(circle at 50% 68%, var(--phase-bg) 0%, rgba(250, 250, 250, 0) 72%);
+        .phase-bottle-item:hover .phase-bottle-img-wrap {
+            background: #F2F2F2;
+            border-color: rgba(0, 0, 0, 0.12);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
         }
 
         .phase-bottle-img-wrap img {
             max-width: 100%;
-            max-height: 100%;
+            max-height: 88%;
             object-fit: contain;
-            filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.08));
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.07));
             transition: transform 0.28s ease, filter 0.28s ease;
         }
 
         .phase-bottle-item:hover .phase-bottle-img-wrap img {
-            filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.15));
-            transform: scale(1.04);
+            transform: scale(1.05);
+            filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.12));
         }
 
-        /* Minimalist Name directly below */
+        /* Minimalist Name directly below matching reference */
         .phase-bottle-name {
-            font-family: var(--font-display), 'Fraunces', Georgia, serif !important;
-            font-size: 1.15rem !important;
-            font-weight: 500 !important;
-            color: #1F2D24 !important;
-            line-height: 1.25 !important;
-            margin: 0.35rem 0 0 !important;
-            letter-spacing: -0.2px !important;
+            font-family: var(--font-sans) !important;
+            font-size: 0.85rem !important;
+            font-weight: 700 !important;
+            color: #1A202C !important;
+            line-height: 1.35 !important;
+            margin: 0 !important;
+            letter-spacing: 0.07em !important;
+            text-transform: uppercase !important;
             transition: color 0.2s ease;
+        }
+
+        .phase-bottle-sub {
+            font-family: var(--font-sans) !important;
+            font-size: 0.74rem !important;
+            font-weight: 500 !important;
+            color: #718096 !important;
+            line-height: 1.35 !important;
+            margin: 0.35rem 0 0 !important;
+            letter-spacing: 0.02em !important;
+            text-transform: uppercase !important;
         }
 
         .phase-bottle-item:hover .phase-bottle-name {
@@ -981,18 +1000,23 @@
                 text-align: left;
             }
             .phase-bottles-row {
-                justify-content: flex-start;
-                gap: 1.5rem;
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
             }
             .phase-bottle-item {
-                width: 135px;
+                max-width: 100%;
+                min-width: 0;
             }
             .phase-bottle-img-wrap {
-                width: 120px;
-                height: 230px;
+                max-height: 220px;
+                padding: 1rem 0.75rem;
             }
             .phase-bottle-name {
-                font-size: 1rem !important;
+                font-size: 0.78rem !important;
+            }
+            .phase-bottle-sub {
+                font-size: 0.68rem !important;
             }
         }
     </style>
@@ -1089,7 +1113,7 @@
             </div>
 
             <!-- Category Filter Tabs -->
-            <div class="category-filter-nav reveal">
+            <div class="category-filter-nav phase-filter-nav reveal">
                 <button class="cat-tab-btn active" data-filter="all">All Formulas (10)</button>
                 <button class="cat-tab-btn" data-filter="cat-pregnancy">
                     <span class="color-dot" style="background: #1CABB0;"></span> Phase 1: Pregnancy Support (4)
@@ -1142,24 +1166,28 @@
                                     <img src="images/bottles/bottle-deep-rest-1.jpg" alt="Deep Rest 1 Tincture" loading="lazy">
                                 </div>
                                 <h4 class="phase-bottle-name">Deep Rest 1</h4>
+                                <p class="phase-bottle-sub">Sleep &amp; Tension Relief</p>
                             </div>
                             <div class="phase-bottle-item">
                                 <div class="phase-bottle-img-wrap">
                                     <img src="images/bottles/bottle-deep-rest-2.jpg" alt="Deep Rest 2 Tincture" loading="lazy">
                                 </div>
                                 <h4 class="phase-bottle-name">Deep Rest 2</h4>
+                                <p class="phase-bottle-sub">Calming For Sensitive Systems</p>
                             </div>
                             <div class="phase-bottle-item">
                                 <div class="phase-bottle-img-wrap">
                                     <img src="images/bottles/bottle-swell-away.jpg" alt="Swell Away Tincture" loading="lazy">
                                 </div>
                                 <h4 class="phase-bottle-name">Swell Away</h4>
+                                <p class="phase-bottle-sub">Fluid Balance &amp; Edema Relief</p>
                             </div>
                             <div class="phase-bottle-item">
                                 <div class="phase-bottle-img-wrap">
                                     <img src="images/bottles/bottle-cool-center.jpg" alt="Cool Center Tincture" loading="lazy">
                                 </div>
                                 <h4 class="phase-bottle-name">Cool Center</h4>
+                                <p class="phase-bottle-sub">Heartburn &amp; Nausea Relief</p>
                             </div>
                         </div>
                     </div>
@@ -1197,12 +1225,14 @@
                                     <img src="images/bottles/bottle-getting-ready.jpg" alt="Getting Ready Tincture" loading="lazy">
                                 </div>
                                 <h4 class="phase-bottle-name">Getting Ready</h4>
+                                <p class="phase-bottle-sub">Cervical Ripening &amp; Stamina</p>
                             </div>
                             <div class="phase-bottle-item">
                                 <div class="phase-bottle-img-wrap">
                                     <img src="images/bottles/bottle-boost-up.jpg" alt="Boost Up Tincture" loading="lazy">
                                 </div>
                                 <h4 class="phase-bottle-name">Boost Up</h4>
+                                <p class="phase-bottle-sub">Vital Energy &amp; Fatigue Support</p>
                             </div>
                         </div>
                     </div>
@@ -1240,18 +1270,21 @@
                                     <img src="images/bottles/bottle-high-baby.jpg" alt="High Baby Tincture" loading="lazy">
                                 </div>
                                 <h4 class="phase-bottle-name">High Baby</h4>
+                                <p class="phase-bottle-sub">Fetal Descent &amp; Pelvic Opening</p>
                             </div>
                             <div class="phase-bottle-item">
                                 <div class="phase-bottle-img-wrap">
                                     <img src="images/bottles/bottle-more-oomph.jpg" alt="More Oomph Tincture" loading="lazy">
                                 </div>
                                 <h4 class="phase-bottle-name">More Oomph</h4>
+                                <p class="phase-bottle-sub">Contraction Strength &amp; Labor Progress</p>
                             </div>
                             <div class="phase-bottle-item">
                                 <div class="phase-bottle-img-wrap">
                                     <img src="images/bottles/bottle-turn-around.jpg" alt="Turn Around Tincture" loading="lazy">
                                 </div>
                                 <h4 class="phase-bottle-name">Turn Around</h4>
+                                <p class="phase-bottle-sub">Optimal Baby Positioning</p>
                             </div>
                         </div>
                     </div>
@@ -1289,6 +1322,7 @@
                                     <img src="images/bottles/bottle-abundant-flow.jpg" alt="Abundant Flow Tincture" loading="lazy">
                                 </div>
                                 <h4 class="phase-bottle-name">Abundant Flow</h4>
+                                <p class="phase-bottle-sub">Postpartum Qi &amp; Lactation</p>
                             </div>
                         </div>
                     </div>
@@ -1415,7 +1449,15 @@
             const phaseBars = document.querySelectorAll('.phase-accordion-bar');
             const tabButtons = document.querySelectorAll('.cat-tab-btn');
 
-            // Keyboard accessibility (Enter / Space to toggle accordion bars)
+            // Default all phase accordion sections to collapsed on initial page load
+            phaseBars.forEach(bar => {
+                bar.classList.remove('open');
+                bar.style.display = 'block';
+                const hdr = bar.querySelector('.phase-bar-header');
+                if (hdr) hdr.setAttribute('aria-expanded', 'false');
+            });
+
+            // Keyboard accessibility & click toggle for accordion bars
             document.querySelectorAll('.phase-bar-header').forEach(header => {
                 header.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
@@ -1426,8 +1468,9 @@
                 header.addEventListener('click', () => {
                     const bar = header.closest('.phase-accordion-bar');
                     if (bar) {
-                        const isOpen = bar.classList.contains('open');
-                        header.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                        const willBeOpen = !bar.classList.contains('open');
+                        bar.classList.toggle('open', willBeOpen);
+                        header.setAttribute('aria-expanded', willBeOpen ? 'true' : 'false');
                     }
                 });
             });
@@ -1435,6 +1478,9 @@
             // Tab Buttons click (filter and smooth accordion control)
             tabButtons.forEach(btn => {
                 btn.addEventListener('click', (e) => {
+                    tabButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
                     const targetFilter = btn.getAttribute('data-filter');
                     if (targetFilter === 'all') {
                         phaseBars.forEach(bar => {
@@ -1482,6 +1528,8 @@
                             if (hdr) hdr.setAttribute('aria-expanded', 'true');
                         } else {
                             bar.classList.remove('open');
+                            const hdr = bar.querySelector('.phase-bar-header');
+                            if (hdr) hdr.setAttribute('aria-expanded', 'false');
                         }
                     });
                     tabButtons.forEach(btn => {

@@ -67,13 +67,13 @@ document.addEventListener('DOMContentLoaded', () => {
     /* -----------------------------------------------------------
      * 3. Category Accordion & Filter Tabs (index.html)
      * ----------------------------------------------------------- */
-    const categoryItems = document.querySelectorAll('.category-accordion-item');
-    const catTabButtons = document.querySelectorAll('.cat-tab-btn');
+    const categoryItems = document.querySelectorAll('.category-accordion-item:not(.phase-accordion-bar)');
+    const catTabButtons = document.querySelectorAll('.category-filter-nav:not(.phase-filter-nav) .cat-tab-btn');
 
     // Accordion header click toggles collapse/expand
     document.querySelectorAll('.category-accordion-header').forEach(header => {
         header.addEventListener('click', () => {
-            const parentItem = header.closest('.category-accordion-item');
+            const parentItem = header.closest('.category-accordion-item:not(.phase-accordion-bar)');
             if (parentItem) {
                 parentItem.classList.toggle('open');
             }
@@ -90,13 +90,14 @@ document.addEventListener('DOMContentLoaded', () => {
             categoryItems.forEach(item => {
                 if (targetFilter === 'all') {
                     item.style.display = 'block';
-                    item.classList.add('open');
+                    item.classList.remove('open');
                 } else if (item.id === targetFilter) {
                     item.style.display = 'block';
                     item.classList.add('open');
                     item.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 } else {
                     item.style.display = 'none';
+                    item.classList.remove('open');
                 }
             });
         });
