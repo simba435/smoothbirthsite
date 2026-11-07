@@ -11,7 +11,9 @@ window.SMOOTH_BIRTH_CONFIG = {
     // Cloudflare Turnstile Site Key
     turnstileSiteKey: "0x4AAAAAAFUz1RMAT1FQIPVT",
     // Paste your Clerk Publishable Key here when ready (e.g. "pk_test_...")
-    clerkPublishableKey: ""
+    clerkPublishableKey: "",
+    // Default dispensary access passcode for approved practitioners
+    practitionerPasscode: "smoothbirth"
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -157,26 +159,141 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* -----------------------------------------------------------
-     * 5. Wholesale Portal Tabs (wholesale.html)
+     * 5. Wholesale Practitioner Authentication & Portal Gating (wholesale.html)
      * ----------------------------------------------------------- */
-    const tabBtnOrder = document.getElementById('tab-btn-order');
-    const tabBtnApply = document.getElementById('tab-btn-apply');
     const viewOrder = document.getElementById('view-order');
     const viewApply = document.getElementById('view-apply');
+    const sessionDisplay = document.getElementById('session-user-display');
+    const btnToggleLogin = document.getElementById('btn-toggle-login');
+    const btnCancelLogin = document.getElementById('btn-cancel-login');
+    const loginCard = document.getElementById('practitioner-login-card');
+    const loginForm = document.getElementById('practitioner-login-form');
+    const loginError = document.getElementById('login-error-msg');
+    const btnLogout = document.getElementById('btn-practitioner-logout');
 
-    if (tabBtnOrder && tabBtnApply && viewOrder && viewApply) {
-        tabBtnOrder.addEventListener('click', () => {
-            tabBtnOrder.classList.add('active');
-            tabBtnApply.classList.remove('active');
-            viewOrder.classList.add('active');
-            viewApply.classList.remove('active');
+    const AUTH_STORAGE_KEY = 'sb_practitioner_session';
+
+    const getPractitionerSession = () => {
+        try {
+            const raw = localStorage.getItem(AUTH_STORAGE_KEY);
+            return raw ? JSON.parse(raw) : null;
+        } catch (e) {
+            return null;
+        }
+    };
+
+    const setPractitionerSession = (data) => {
+        try {
+            localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(data));
+        } catch (e) {}
+    };
+
+    const clearPractitionerSession = () => {
+        try {
+            localStorage.removeItem(AUTH_STORAGE_KEY);
+        } catch (e) {}
+    };
+
+    const renderWholesaleView = () => {
+        const session = getPractitionerSession();
+        const isLoggedIn = !!(session && session.isLoggedIn);
+
+        if (isLoggedIn) {
+            // Logged in: Show Master Order Form only
+            if (viewOrder) {
+                viewOrder.classList.add('active');
+                viewOrder.style.display = 'block';
+            }
+            if (viewApply) {
+                viewApply.classList.remove('active');
+                viewApply.style.display = 'none';
+            }
+            if (sessionDisplay) {
+                sessionDisplay.textContent = session.email || 'Verified Practitioner';
+            }
+            const orderEmail = document.getElementById('order-email');
+            if (orderEmail && !orderEmail.value && session.email) {
+                orderEmail.value = session.email;
+            }
+            if (loginCard) {
+                loginCard.style.display = 'none';
+            }
+        } else {
+            // Logged out: Show Sign Up only
+            if (viewOrder) {
+                viewOrder.classList.remove('active');
+                viewOrder.style.display = 'none';
+            }
+            if (viewApply) {
+                viewApply.classList.add('active');
+                viewApply.style.display = 'block';
+            }
+        }
+    };
+
+    // Initialize portal view state on load
+    if (viewOrder || viewApply) {
+        renderWholesaleView();
+    }
+
+    // Toggle Sign In card
+    if (btnToggleLogin && loginCard) {
+        btnToggleLogin.addEventListener('click', () => {
+            const isVisible = loginCard.style.display === 'block';
+            loginCard.style.display = isVisible ? 'none' : 'block';
+            if (!isVisible) {
+                loginCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                const loginEmailInput = document.getElementById('login-email');
+                if (loginEmailInput) loginEmailInput.focus();
+            }
         });
+    }
 
-        tabBtnApply.addEventListener('click', () => {
-            tabBtnApply.classList.add('active');
-            tabBtnOrder.classList.remove('active');
-            viewApply.classList.add('active');
-            viewOrder.classList.remove('active');
+    if (btnCancelLogin && loginCard) {
+        btnCancelLogin.addEventListener('click', () => {
+            loginCard.style.display = 'none';
+            if (loginError) loginError.style.display = 'none';
+        });
+    }
+
+    // Handle Sign In submission
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const emailInput = document.getElementById('login-email');
+            const passInput = document.getElementById('login-password');
+            const email = emailInput ? emailInput.value.trim() : '';
+            const password = passInput ? passInput.value.trim() : '';
+
+            // Verification check: accept configured passcode (default: "smoothbirth", case-insensitive)
+            // as well as "apothecary" or "midwife"
+            const configuredPass = (window.SMOOTH_BIRTH_CONFIG.practitionerPasscode || 'smoothbirth').toLowerCase();
+            const entered = password.toLowerCase();
+
+            if (entered === configuredPass || entered === 'apothecary' || entered === 'midwife') {
+                if (loginError) loginError.style.display = 'none';
+                setPractitionerSession({
+                    isLoggedIn: true,
+                    email: email,
+                    loginTime: new Date().toISOString()
+                });
+                renderWholesaleView();
+                window.scrollTo({ top: 120, behavior: 'smooth' });
+            } else {
+                if (loginError) {
+                    loginError.style.display = 'block';
+                    loginError.innerHTML = '<strong>Invalid Passcode:</strong> The dispensary passcode you entered does not match our records. Please check your practitioner approval email or contact <a href="mailto:hello@smoothbirth.com" style="color: #B71C1C; text-decoration: underline;">hello@smoothbirth.com</a>.';
+                }
+            }
+        });
+    }
+
+    // Handle Log Out
+    if (btnLogout) {
+        btnLogout.addEventListener('click', () => {
+            clearPractitionerSession();
+            renderWholesaleView();
+            window.scrollTo({ top: 120, behavior: 'smooth' });
         });
     }
 

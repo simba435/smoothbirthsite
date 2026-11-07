@@ -84,17 +84,23 @@
             <span class="star">🌟</span>
         </div>
 
-        <!-- Portal Tabs Navigation -->
-        <div class="wholesale-tabs-nav">
-            <button class="wholesale-tab-trigger active" id="tab-btn-order" type="button">Master Order Form</button>
-            <button class="wholesale-tab-trigger" id="tab-btn-apply" type="button">Practitioner Application / Sign Up</button>
-        </div>
-
         <!-- ============================================
-             VIEW 1: WHOLESALE MASTER ORDER FORM
+             VIEW 1: WHOLESALE MASTER ORDER FORM (Gated: Logged In Only)
              ============================================ -->
-        <div class="portal-view active" id="view-order">
+        <div class="portal-view" id="view-order" style="display: none;">
             <div class="portal-card">
+                <!-- Verified Practitioner Session Status Bar -->
+                <div id="practitioner-session-bar" style="background: rgba(35, 53, 41, 0.05); border: 1px solid rgba(35, 53, 41, 0.15); border-radius: 6px; padding: 0.85rem 1.25rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+                    <div style="display: flex; align-items: center; gap: 0.6rem;">
+                        <span style="display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #2E7D32;"></span>
+                        <span style="font-size: 0.86rem; color: var(--text-dark);">
+                            Logged in as: <strong id="session-user-display" style="color: var(--primary-dark);">Verified Practitioner</strong>
+                        </span>
+                    </div>
+                    <button type="button" id="btn-practitioner-logout" style="background: none; border: 1px solid rgba(198, 40, 40, 0.3); border-radius: 4px; padding: 0.35rem 0.8rem; color: #C62828; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease;">
+                        Sign Out / Lock Portal
+                    </button>
+                </div>
                 <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; margin-bottom: 1.5rem;">
                     <div>
                         <h2 style="font-family: var(--font-serif); font-size: 1.9rem; margin-bottom: 0.2rem;">Wholesale Master Order Form</h2>
@@ -458,10 +464,56 @@
         </div>
 
         <!-- ============================================
-             VIEW 2: PRACTITIONER APPLICATION / REGISTRATION
+             VIEW 2: PRACTITIONER APPLICATION / REGISTRATION (Default: Sign Up Only)
              ============================================ -->
-        <div class="portal-view" id="view-apply">
+        <div class="portal-view active" id="view-apply" style="display: block;">
             <div class="portal-card">
+
+                <!-- Returning Practitioner Sign In Callout -->
+                <div class="practitioner-auth-callout" style="background: #FAFAFA; border: 1px solid var(--border-light); border-radius: 6px; padding: 1.1rem 1.4rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <div>
+                        <span style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; color: var(--gold-dark); display: block; margin-bottom: 0.15rem;">Approved Practitioner?</span>
+                        <strong style="color: var(--primary-dark); font-size: 0.98rem;">Already have verified dispensary credentials?</strong>
+                        <p style="margin: 0.15rem 0 0; font-size: 0.82rem; color: var(--text-light);">Sign in with your clinic email and access passcode to unlock the Master Order Form.</p>
+                    </div>
+                    <button type="button" id="btn-toggle-login" class="btn-primary" style="padding: 0.65rem 1.4rem; font-size: 0.82rem; white-space: nowrap;">
+                        Practitioner Sign In &rarr;
+                    </button>
+                </div>
+
+                <!-- Practitioner Sign In Card (Toggled) -->
+                <div id="practitioner-login-card" style="display: none; background: #FFFFFF; border: 2px solid var(--primary); border-radius: 8px; padding: 1.75rem 2rem; margin-bottom: 2rem; box-shadow: 0 4px 16px rgba(0,0,0,0.06);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                        <div>
+                            <h3 style="font-family: var(--font-serif); font-size: 1.4rem; color: var(--primary-dark); margin: 0 0 0.25rem;">Practitioner Sign In</h3>
+                            <p style="margin: 0; font-size: 0.84rem; color: var(--text-light);">Enter your clinic email and dispensary access passcode to view the Master Order Form.</p>
+                        </div>
+                        <button type="button" id="btn-cancel-login" style="background: none; border: none; font-size: 1.25rem; line-height: 1; color: var(--text-muted); cursor: pointer; padding: 0.2rem 0.5rem;" title="Close sign in form">&times;</button>
+                    </div>
+
+                    <form id="practitioner-login-form">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+                            <div class="form-group">
+                                <label for="login-email" style="font-size: 0.82rem; font-weight: 600; display: block; margin-bottom: 0.3rem;">Practitioner / Clinic Email *</label>
+                                <input type="email" id="login-email" required placeholder="midwife@clinic.com" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-light); border-radius: 4px; font-size: 0.88rem;">
+                            </div>
+                            <div class="form-group">
+                                <label for="login-password" style="font-size: 0.82rem; font-weight: 600; display: block; margin-bottom: 0.3rem;">Dispensary Access Passcode *</label>
+                                <input type="password" id="login-password" required placeholder="Enter clinic passcode" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-light); border-radius: 4px; font-size: 0.88rem;">
+                            </div>
+                        </div>
+
+                        <div id="login-error-msg" style="display: none; background: #FFF3F3; border: 1px solid #D32F2F; color: #B71C1C; padding: 0.75rem 1rem; border-radius: 4px; font-size: 0.84rem; margin-bottom: 1rem; line-height: 1.4;"></div>
+
+                        <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                            <button type="submit" class="btn-primary" style="padding: 0.75rem 1.6rem; font-size: 0.88rem;">
+                                Unlock Master Order Form &rarr;
+                            </button>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">Passcode provided in your clinic welcome approval email.</span>
+                        </div>
+                    </form>
+                </div>
+
                 <h2 style="font-family: var(--font-serif); font-size: 1.9rem; margin-bottom: 0.5rem;">Practitioner Account Application</h2>
                 <p style="font-size: 0.92rem; color: var(--text-light); margin-bottom: 1.5rem;">
                     To protect practitioner dispensaries, accounts are held in a pending state while we verify licensing or professional doula/midwifery certification.
