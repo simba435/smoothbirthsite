@@ -12,8 +12,8 @@ window.SMOOTH_BIRTH_CONFIG = {
     turnstileSiteKey: "0x4AAAAAAFUz1RMAT1FQIPVT",
     // Clerk Publishable Key (Smooth Birth Apothecary app_3LnUVPN9ZVBrm1y0hU7NAKp8hxc)
     clerkPublishableKey: "pk_test_c3BsZW5kaWQtYmFkZ2VyLTQ1MTIuY2xlcmsuYWNjb3VudHMuZGV2JA",
-    // Default dispensary access passcode for approved practitioners
-    practitionerPasscode: "smoothbirth"
+    // Default dispensary access password for approved practitioners
+    practitionerPassword: "smoothbirth"
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -236,9 +236,18 @@ document.addEventListener('DOMContentLoaded', () => {
         renderWholesaleView();
     }
 
-    // Toggle Sign In card
+    // Toggle Sign In card / Clerk Modal
     if (btnToggleLogin && loginCard) {
-        btnToggleLogin.addEventListener('click', () => {
+        btnToggleLogin.addEventListener('click', (e) => {
+            if (window.Clerk) {
+                e.preventDefault();
+                try {
+                    window.Clerk.openSignIn();
+                    return;
+                } catch (err) {
+                    console.warn('Opening Clerk fallback:', err);
+                }
+            }
             const isVisible = loginCard.style.display === 'block';
             loginCard.style.display = isVisible ? 'none' : 'block';
             if (!isVisible) {
@@ -265,9 +274,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const email = emailInput ? emailInput.value.trim() : '';
             const password = passInput ? passInput.value.trim() : '';
 
-            // Verification check: accept configured passcode (default: "smoothbirth", case-insensitive)
+            // Verification check: accept configured password (default: "smoothbirth", case-insensitive)
             // as well as "apothecary" or "midwife"
-            const configuredPass = (window.SMOOTH_BIRTH_CONFIG.practitionerPasscode || 'smoothbirth').toLowerCase();
+            const configuredPass = (window.SMOOTH_BIRTH_CONFIG.practitionerPassword || 'smoothbirth').toLowerCase();
             const entered = password.toLowerCase();
 
             if (entered === configuredPass || entered === 'apothecary' || entered === 'midwife') {
@@ -282,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 if (loginError) {
                     loginError.style.display = 'block';
-                    loginError.innerHTML = '<strong>Invalid Passcode:</strong> The dispensary passcode you entered does not match our records. Please check your practitioner approval email or contact <a href="mailto:hello@smoothbirth.com" style="color: #B71C1C; text-decoration: underline;">hello@smoothbirth.com</a>.';
+                    loginError.innerHTML = '<strong>Invalid Password:</strong> The password you entered does not match our records. Please check your practitioner approval email or contact <a href="mailto:hello@smoothbirth.com" style="color: #B71C1C; text-decoration: underline;">hello@smoothbirth.com</a>.';
                 }
             }
         });
