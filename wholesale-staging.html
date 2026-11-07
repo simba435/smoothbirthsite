@@ -97,9 +97,12 @@
                             Logged in as: <strong id="session-user-display" style="color: var(--primary-dark);">Verified Practitioner</strong>
                         </span>
                     </div>
-                    <button type="button" id="btn-practitioner-logout" style="background: none; border: 1px solid rgba(198, 40, 40, 0.3); border-radius: 4px; padding: 0.35rem 0.8rem; color: #C62828; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease;">
-                        Sign Out / Lock Portal
-                    </button>
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <div id="clerk-user-button"></div>
+                        <button type="button" id="btn-practitioner-logout" style="background: none; border: 1px solid rgba(198, 40, 40, 0.3); border-radius: 4px; padding: 0.35rem 0.8rem; color: #C62828; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease;">
+                            Sign Out / Lock Portal
+                        </button>
+                    </div>
                 </div>
                 <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; margin-bottom: 1.5rem;">
                     <div>

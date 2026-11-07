@@ -658,7 +658,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* -----------------------------------------------------------
-     * 8. Clerk Authentication Integration Hook (Optional BaaS)
+     * 8. Clerk Authentication Integration (Full BaaS Auth & Prefill)
      * ----------------------------------------------------------- */
     if (window.SMOOTH_BIRTH_CONFIG.clerkPublishableKey) {
         const script = document.createElement('script');
@@ -670,22 +670,113 @@ document.addEventListener('DOMContentLoaded', () => {
                 const clerk = window.Clerk;
                 await clerk.load({ publishableKey: window.SMOOTH_BIRTH_CONFIG.clerkPublishableKey });
 
-                if (clerk.user) {
-                    // Pre-fill user data into the order form
-                    const clinicInput = document.getElementById('order-clinic');
-                    const contactInput = document.getElementById('order-contact');
-                    const emailInput = document.getElementById('order-email');
+                const syncClerkAuthState = (user) => {
+                    const viewOrder = document.getElementById('view-order');
+                    const viewApply = document.getElementById('view-apply');
+                    const sessionDisplay = document.getElementById('session-user-display');
+                    const logoutBtn = document.getElementById('btn-practitioner-logout');
+                    const clerkUserButtonMount = document.getElementById('clerk-user-button');
 
-                    if (contactInput && !contactInput.value) {
-                        contactInput.value = clerk.user.fullName || '';
+                    if (user) {
+                        // User is authenticated via Clerk
+                        if (viewOrder) {
+                            viewOrder.classList.add('active');
+                            viewOrder.style.display = 'block';
+                        }
+                        if (viewApply) {
+                            viewApply.classList.remove('active');
+                            viewApply.style.display = 'none';
+                        }
+                        if (sessionDisplay) {
+                            sessionDisplay.textContent = user.primaryEmailAddress ? user.primaryEmailAddress.emailAddress : (user.fullName || 'Verified Practitioner');
+                        }
+
+                        // Mount Clerk User Button (Account management & Sign Out)
+                        if (clerkUserButtonMount) {
+                            clerk.mountUserButton(clerkUserButtonMount);
+                        }
+                        if (logoutBtn) {
+                            logoutBtn.style.display = 'none'; // Replaced by Clerk User Button
+                        }
+
+                        // Prefill all Clinic & Shipping fields from user metadata
+                        const contactInput = document.getElementById('order-contact');
+                        const emailInput = document.getElementById('order-email');
+                        const phoneInput = document.getElementById('order-phone');
+                        const clinicInput = document.getElementById('order-clinic');
+                        const addressInput = document.getElementById('order-address');
+
+                        const meta = user.unsafeMetadata || user.publicMetadata || {};
+
+                        if (contactInput && !contactInput.value) {
+                            contactInput.value = user.fullName || '';
+                        }
+                        if (emailInput && !emailInput.value) {
+                            emailInput.value = user.primaryEmailAddress ? user.primaryEmailAddress.emailAddress : '';
+                        }
+                        if (phoneInput && !phoneInput.value) {
+                            phoneInput.value = user.primaryPhoneNumber ? user.primaryPhoneNumber.phoneNumber : (meta.phone || '');
+                        }
+                        if (clinicInput && !clinicInput.value && meta.clinicName) {
+                            clinicInput.value = meta.clinicName;
+                        }
+                        if (addressInput && !addressInput.value && meta.shippingAddress) {
+                            addressInput.value = meta.shippingAddress;
+                        }
+                    } else {
+                        // Logged out
+                        if (viewOrder) {
+                            viewOrder.classList.remove('active');
+                            viewOrder.style.display = 'none';
+                        }
+                        if (viewApply) {
+                            viewApply.classList.add('active');
+                            viewApply.style.display = 'block';
+                        }
                     }
-                    if (emailInput && !emailInput.value) {
-                        emailInput.value = clerk.user.primaryEmailAddress ? clerk.user.primaryEmailAddress.emailAddress : '';
-                    }
-                    if (clinicInput && !clinicInput.value && clerk.user.publicMetadata && clerk.user.publicMetadata.clinicName) {
-                        clinicInput.value = clerk.user.publicMetadata.clinicName;
-                    }
+                };
+
+                // Listen to live Clerk state updates (sign in, sign out)
+                clerk.addListener(({ user }) => {
+                    syncClerkAuthState(user);
+                });
+
+                // Initial sync
+                syncClerkAuthState(clerk.user);
+
+                // Override manual login trigger to open Clerk's native modal
+                const btnToggleLogin = document.getElementById('btn-toggle-login');
+                if (btnToggleLogin) {
+                    btnToggleLogin.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        clerk.openSignIn();
+                    }, true);
                 }
+
+                // When order form is submitted, persist updated clinic info to Clerk user metadata
+                const orderForm = document.getElementById('wholesale-order-form');
+                if (orderForm) {
+                    orderForm.addEventListener('submit', () => {
+                        if (clerk.user) {
+                            const clinicVal = document.getElementById('order-clinic')?.value;
+                            const phoneVal = document.getElementById('order-phone')?.value;
+                            const addrVal = document.getElementById('order-address')?.value;
+                            try {
+                                clerk.user.update({
+                                    unsafeMetadata: {
+                                        clinicName: clinicVal || '',
+                                        phone: phoneVal || '',
+                                        shippingAddress: addrVal || ''
+                                    }
+                                });
+                            } catch (e) {
+                                console.warn('Could not update Clerk metadata:', e);
+                            }
+                        }
+                    });
+                }
+
             } catch (err) {
                 console.warn('Clerk initialization notice:', err);
             }
