@@ -470,6 +470,29 @@
         </div>
 
         <!-- ============================================
+             VIEW 3: APPLICATION UNDER REVIEW / PENDING (Gated: Logged In but Not Approved)
+             ============================================ -->
+        <div class="portal-view" id="view-pending" style="display: none;">
+            <div class="portal-card" style="max-width: 680px; margin: 0 auto; text-align: center; padding: 3.5rem 2rem;">
+                <div style="font-size: 2.8rem; color: var(--primary); margin-bottom: 1rem;">❧</div>
+                <h2 style="font-family: var(--font-serif); font-size: 2rem; color: var(--primary-dark); margin-bottom: 0.8rem;">
+                    Application Under Review
+                </h2>
+                <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text-body); max-width: 520px; margin: 0 auto 1.8rem;">
+                    Your application is under review. Once reviewed, you will be notified by email.
+                </p>
+                <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: var(--bg-cream); border: 1px solid var(--border-gold); padding: 0.5rem 1rem; border-radius: 4px; font-size: 0.85rem; color: var(--text-light); margin-bottom: 2rem;">
+                    <span>Signed in as: <strong id="pending-user-display" style="color: var(--primary-dark);">Practitioner</strong></span>
+                </div>
+                <div>
+                    <button type="button" id="btn-pending-logout" class="btn-primary" style="background: none; border: 1px solid rgba(198, 40, 40, 0.4); color: #C62828; padding: 0.65rem 1.4rem; font-size: 0.84rem; font-weight: 600; cursor: pointer; border-radius: 4px;">
+                        Sign Out
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================
              VIEW 2: PRACTITIONER APPLICATION / REGISTRATION (Default: Sign Up Only)
              ============================================ -->
         <div class="portal-view active" id="view-apply" style="display: block;">

@@ -196,6 +196,9 @@ document.addEventListener('DOMContentLoaded', () => {
      * ----------------------------------------------------------- */
     const viewOrder = document.getElementById('view-order');
     const viewApply = document.getElementById('view-apply');
+    const viewPending = document.getElementById('view-pending');
+    const pendingDisplay = document.getElementById('pending-user-display');
+    const btnPendingLogout = document.getElementById('btn-pending-logout');
     const sessionDisplay = document.getElementById('session-user-display');
     const btnToggleLogin = document.getElementById('btn-toggle-login');
     const btnTogglePassLogin = document.getElementById('btn-toggle-pass-login');
@@ -239,6 +242,10 @@ document.addEventListener('DOMContentLoaded', () => {
             viewApply.classList.remove('active');
             viewApply.style.display = 'none';
         }
+        if (viewPending) {
+            viewPending.classList.remove('active');
+            viewPending.style.display = 'none';
+        }
         if (sessionDisplay) {
             sessionDisplay.textContent = sessionInfo.email || 'Verified Practitioner';
         }
@@ -275,6 +282,10 @@ document.addEventListener('DOMContentLoaded', () => {
             viewApply.classList.add('active');
             viewApply.style.display = 'block';
         }
+        if (viewPending) {
+            viewPending.classList.remove('active');
+            viewPending.style.display = 'none';
+        }
         if (clerkUserButtonMount) {
             clerkUserButtonMount.innerHTML = '';
         }
@@ -283,11 +294,40 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const showPendingView = (sessionInfo) => {
+        if (viewOrder) {
+            viewOrder.classList.remove('active');
+            viewOrder.style.display = 'none';
+        }
+        if (viewApply) {
+            viewApply.classList.remove('active');
+            viewApply.style.display = 'none';
+        }
+        if (viewPending) {
+            viewPending.classList.add('active');
+            viewPending.style.display = 'block';
+        }
+        if (pendingDisplay) {
+            pendingDisplay.textContent = sessionInfo.email || 'Practitioner';
+        }
+        if (loginCard) {
+            loginCard.style.display = 'none';
+        }
+    };
+
     // Unified auth state evaluator: checks Clerk user first, then local password session
     const syncPortalAuthState = (clerkUser) => {
-        // 1. If Clerk reports an authenticated user, Clerk auth takes precedence
+        // 1. If Clerk reports an authenticated user, verify approval status
         if (clerkUser) {
             const email = clerkUser.primaryEmailAddress ? clerkUser.primaryEmailAddress.emailAddress : (clerkUser.fullName || 'Verified Practitioner');
+            const meta = clerkUser.publicMetadata || clerkUser.unsafeMetadata || {};
+            const isApproved = meta.approved === true || meta.role === 'approved_practitioner' || meta.status === 'approved';
+
+            if (!isApproved) {
+                showPendingView({ type: 'clerk', email: email, user: clerkUser });
+                return;
+            }
+
             showMasterOrderView({ type: 'clerk', email: email, user: clerkUser });
 
             // Prefill all Clinic & Shipping fields from Clerk user metadata
@@ -296,8 +336,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const phoneInput = document.getElementById('order-phone');
             const clinicInput = document.getElementById('order-clinic');
             const addressInput = document.getElementById('order-address');
-
-            const meta = clerkUser.unsafeMetadata || clerkUser.publicMetadata || {};
 
             if (contactInput && !contactInput.value) {
                 contactInput.value = clerkUser.fullName || '';
@@ -412,19 +450,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Universal Log Out: clears local session and signs out of Clerk
-    if (btnLogout) {
-        btnLogout.addEventListener('click', async () => {
-            clearPractitionerSession();
-            if (window.Clerk && window.Clerk.user) {
-                try {
-                    await window.Clerk.signOut();
-                } catch (e) {
-                    console.warn('Clerk signOut error:', e);
-                }
+    const handleLogout = async () => {
+        clearPractitionerSession();
+        if (window.Clerk && window.Clerk.user) {
+            try {
+                await window.Clerk.signOut();
+            } catch (e) {
+                console.warn('Clerk signOut error:', e);
             }
-            syncPortalAuthState(null);
-            window.scrollTo({ top: 120, behavior: 'smooth' });
-        });
+        }
+        syncPortalAuthState(null);
+        window.scrollTo({ top: 120, behavior: 'smooth' });
+    };
+
+    if (btnLogout) {
+        btnLogout.addEventListener('click', handleLogout);
+    }
+    if (btnPendingLogout) {
+        btnPendingLogout.addEventListener('click', handleLogout);
     }
 
     /* -----------------------------------------------------------
