@@ -377,52 +377,14 @@ document.addEventListener('DOMContentLoaded', () => {
         syncPortalAuthState(null);
     }
 
-    // Primary Sign In button: opens Clerk modal or redirects to hosted Clerk sign-in
+    // Primary Sign In button: redirects directly to Clerk hosted sign-in on custom domain
     if (btnToggleLogin) {
-        btnToggleLogin.addEventListener('click', async (e) => {
+        btnToggleLogin.addEventListener('click', (e) => {
             e.preventDefault();
-            const originalText = btnToggleLogin.innerHTML;
-            btnToggleLogin.innerHTML = 'Connecting to Sign In...';
+            btnToggleLogin.innerHTML = 'Connecting to Secure Sign In...';
             btnToggleLogin.disabled = true;
-
-            const tryOpenSignIn = async () => {
-                let clerk = window.Clerk;
-                if (!clerk) return false;
-
-                try {
-                    if (typeof clerk === 'function') {
-                        window.Clerk = clerk = new clerk(window.SMOOTH_BIRTH_CONFIG.clerkPublishableKey);
-                    }
-                    if (typeof clerk.load === 'function' && !clerk.loaded) {
-                        await clerk.load({ publishableKey: window.SMOOTH_BIRTH_CONFIG.clerkPublishableKey });
-                    }
-                    if (typeof clerk.openSignIn === 'function') {
-                        clerk.openSignIn({
-                            afterSignInUrl: window.location.href,
-                            afterSignUpUrl: window.location.href
-                        });
-                        btnToggleLogin.innerHTML = originalText;
-                        btnToggleLogin.disabled = false;
-                        return true;
-                    }
-                } catch (err) {
-                    console.warn('Clerk openSignIn modal failed, falling back to hosted sign-in:', err);
-                }
-                return false;
-            };
-
-            const opened = await tryOpenSignIn();
-            if (!opened) {
-                // If Clerk modal isn't ready in 500ms, immediately route to the Clerk Hosted Sign-in URL
-                setTimeout(async () => {
-                    const retried = await tryOpenSignIn();
-                    if (!retried) {
-                        btnToggleLogin.innerHTML = originalText;
-                        btnToggleLogin.disabled = false;
-                        window.location.href = 'https://accounts.smoothbirth.com/sign-in?redirect_url=' + encodeURIComponent(window.location.href);
-                    }
-                }, 500);
-            }
+            // Direct redirect to hosted Clerk portal with seamless return to wholesale portal
+            window.location.href = 'https://accounts.smoothbirth.com/sign-in?redirect_url=' + encodeURIComponent(window.location.href);
         });
     }
 
