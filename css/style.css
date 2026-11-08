@@ -187,14 +187,16 @@ a {
 
 .btn-secondary {
     background-color: transparent;
-    color: var(--white);
-    border: 1px solid rgba(255,255,255,0.6);
+    color: var(--primary-dark);
+    border: 1px solid var(--primary);
 }
 
 .btn-secondary:hover {
-    background-color: var(--white);
-    color: var(--text-dark);
-    border-color: var(--white);
+    background-color: var(--primary);
+    color: var(--white);
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(94, 127, 101, 0.2);
 }
 
 .btn-outline {
