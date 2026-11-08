@@ -55,8 +55,9 @@ content = re.sub(r'^[ \t]*<meta name=\"robots\" content=\"noindex, nofollow\">\r
 # 3. Remove [Staging] suffix from title
 content = re.sub(r' \[Staging\]', '', content)
 
-# 4. Convert all -staging.html links back to .html
+# 4. Convert all -staging.html links and meta refresh URLs back to .html
 content = re.sub(r'href=\"([a-zA-Z0-9_-]+)-staging\.html', r'href=\"\1.html', content)
+content = re.sub(r'url=([a-zA-Z0-9_-]+)-staging\.html', r'url=\1.html', content)
 
 # 5. Convert any -staging.html in Formspree _next redirects
 content = content.replace('smoothbirth.com/thanks-staging.html', 'smoothbirth.com/thanks.html')
