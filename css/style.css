@@ -50,6 +50,7 @@ html, body {
 
 html {
     scroll-behavior: smooth;
+    scroll-padding-top: 100px;
     font-size: 16px;
 }
 
@@ -1484,13 +1485,19 @@ a {
 }
 
 /* Category Accordion Container */
-.category-accordion-item {
+.category-accordion-item,
+.phase-accordion-bar {
     background: var(--bg-white);
     border: 1px solid rgba(0,0,0,0.08);
     border-radius: 8px;
     margin-bottom: 2rem;
     overflow: hidden;
     transition: var(--transition);
+    scroll-margin-top: 110px;
+}
+
+#tinctures {
+    scroll-margin-top: 90px;
 }
 
 .category-accordion-item.open {

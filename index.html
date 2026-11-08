@@ -652,6 +652,11 @@
             overflow: hidden !important;
             position: relative;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            scroll-margin-top: 110px !important;
+        }
+
+        #tinctures {
+            scroll-margin-top: 90px !important;
         }
 
         .phase-accordion-bar:hover {
@@ -1400,6 +1405,19 @@
                 });
             });
 
+            // Smooth scroll helper ensuring accordion header is never hidden behind fixed navbar
+            const scrollToAccordion = (element) => {
+                const nav = document.getElementById('navbar');
+                const navHeight = nav ? nav.offsetHeight : 80;
+                const rect = element.getBoundingClientRect();
+                const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+                const targetY = rect.top + scrollY - (navHeight + 20);
+                window.scrollTo({
+                    top: Math.max(0, targetY),
+                    behavior: 'smooth'
+                });
+            };
+
             // Tab Buttons click (filter and smooth accordion control)
             tabButtons.forEach(btn => {
                 btn.addEventListener('click', (e) => {
@@ -1422,8 +1440,8 @@
                                 const hdr = bar.querySelector('.phase-bar-header');
                                 if (hdr) hdr.setAttribute('aria-expanded', 'true');
                                 setTimeout(() => {
-                                    bar.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                }, 60);
+                                    scrollToAccordion(bar);
+                                }, 80);
                             } else {
                                 bar.classList.remove('open');
                                 const hdr = bar.querySelector('.phase-bar-header');
@@ -1434,11 +1452,13 @@
                 });
             });
 
-            // Global navigation helper for dropdown menu links
+            // Global navigation helper for dropdown menu links & external hash navigation
             window.openCategoryAccordion = function(categoryKey) {
                 const idMap = {
                     'pregnancy': 'cat-pregnancy',
+                    'birthprep': 'cat-birthprep',
                     'prep': 'cat-birthprep',
+                    'laborsupport': 'cat-laborsupport',
                     'labor': 'cat-laborsupport',
                     'postpartum': 'cat-postpartum'
                 };
@@ -1461,10 +1481,36 @@
                         btn.classList.toggle('active', btn.getAttribute('data-filter') === targetId);
                     });
                     setTimeout(() => {
-                        targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 60);
+                        scrollToAccordion(targetEl);
+                    }, 80);
                 }
             };
+
+            // Automatically check and activate category accordion if URL contains a hash
+            function handleHashNavigation() {
+                const hash = window.location.hash;
+                if (!hash) return;
+                const cleanHash = hash.replace(/^#/, '');
+                const validIds = ['cat-pregnancy', 'cat-birthprep', 'cat-laborsupport', 'cat-postpartum'];
+                const aliasMap = {
+                    'pregnancy': 'cat-pregnancy',
+                    'birthprep': 'cat-birthprep',
+                    'prep': 'cat-birthprep',
+                    'laborsupport': 'cat-laborsupport',
+                    'labor': 'cat-laborsupport',
+                    'postpartum': 'cat-postpartum'
+                };
+                const targetId = validIds.includes(cleanHash) ? cleanHash : aliasMap[cleanHash];
+                if (targetId) {
+                    window.openCategoryAccordion(targetId);
+                }
+            }
+
+            // Handle hash on initial page load (with slight buffer for initial browser rendering)
+            setTimeout(handleHashNavigation, 120);
+
+            // Handle hash when navigating or clicking anchors while on the page
+            window.addEventListener('hashchange', handleHashNavigation);
         });
     </script>
 </body>
