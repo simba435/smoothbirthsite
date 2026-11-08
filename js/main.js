@@ -13,7 +13,10 @@ window.SMOOTH_BIRTH_CONFIG = {
     // Clerk Publishable Key (Smooth Birth Apothecary production)
     clerkPublishableKey: "pk_live_Y2xlcmsuc21vb3RoYmlydGguY29tJA",
     // Default dispensary access password for approved practitioners
-    practitionerPassword: "smoothbirth"
+    practitionerPassword: "smoothbirth",
+    // Cloudflare Worker 1-Click Approval Endpoint (configured upon deploy)
+    approvalWorkerEndpoint: "https://smoothbirth-approval-worker.workers.dev/approve",
+    approvalSecretToken: "sb_dispensary_secret_2026"
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -820,6 +823,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const payload = new FormData(registerForm);
             payload.set('_subject', `New Practitioner Application: ${regName} (${regClinic})`);
             payload.set('_replyto', regEmail);
+
+            // Construct 1-Click Approval Link for Simba's Formspree Notification Email
+            const workerEndpoint = window.SMOOTH_BIRTH_CONFIG.approvalWorkerEndpoint;
+            const secretToken = window.SMOOTH_BIRTH_CONFIG.approvalSecretToken || 'sb_dispensary_secret_2026';
+            if (workerEndpoint) {
+                const approveUrl = `${workerEndpoint}?email=${encodeURIComponent(regEmail)}&name=${encodeURIComponent(regName)}&clinic=${encodeURIComponent(regClinic)}&token=${secretToken}`;
+                payload.set('1_CLICK_APPROVE_PRACTITIONER', approveUrl);
+            }
+            payload.set('Clerk_Dashboard_Search', `https://dashboard.clerk.com/last-active?search=${encodeURIComponent(regEmail)}`);
 
             const targetUrl = window.SMOOTH_BIRTH_CONFIG.formspreeRegEndpoint || registerForm.action;
 
