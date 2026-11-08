@@ -167,7 +167,7 @@ export default {
                     Dear ${practitionerDisplayName},
                   </p>
                   <p style="font-size: 15px; line-height: 1.7; color: #4A4A4A; margin: 0 0 20px;">
-                    Your practitioner credentials for <strong>${clinic || 'your clinical practice'}</strong> have been verified and approved by Simba Eun-Hye Shim, L.Ac.
+                    Your practitioner credentials for <strong>${clinic || 'your clinical practice'}</strong> have been verified and approved by Smooth Birth Apothecary.
                   </p>
                   <div style="background: #F7F4EF; border-left: 3px solid #B8956A; padding: 14px 18px; border-radius: 4px; margin: 0 0 24px; font-size: 14px; line-height: 1.6; color: #4A4A4A;">
                     <strong>Wholesale Ordering Guidelines:</strong><br>
@@ -183,6 +183,11 @@ export default {
                   <p style="font-size: 13px; line-height: 1.6; color: #717171; margin: 24px 0 0;">
                     You can sign in using your email address (<strong>${email}</strong>) or your clinic dispensary credentials.<br>
                     If you have clinical formula questions or custom client needs, feel free to reply directly to this email.
+                  </p>
+                  <p style="font-size: 14px; line-height: 1.6; color: #4A4A4A; margin: 24px 0 0;">
+                    Warmly,<br>
+                    <strong>Smooth Birth Apothecary</strong><br>
+                    <span style="font-size: 13px; color: #717171;">Clinical Dispensary Team</span>
                   </p>
                 </td>
               </tr>
@@ -369,7 +374,7 @@ function renderHtmlResponse(data, statusCode = 200) {
         ${isSuccess && data.email ? `
           <div style="margin-bottom: 1.5rem;">
             <a href="mailto:${encodeURIComponent(data.email)}?subject=${encodeURIComponent('Your Smooth Birth Wholesale Practitioner Account is Approved!')}&body=${encodeURIComponent(
-              `Dear ${data.name || 'Practitioner'},\n\nWelcome to Smooth Birth Apothecary! Your wholesale practitioner credentials for ${data.clinic || 'your practice'} have been verified and approved.\n\nYou can now log into the wholesale dispensary portal to view clinical formulas and place restocking orders directly at:\nhttps://smoothbirth.com/wholesale.html\n\nWholesale Ordering Guidelines:\n• Minimum batch size per formula: 8 oz (8 x 1 oz bottles or 4 x 2 oz bottles)\n• FREE direct shipping on all orders over $250\n• Invoicing sent via Square / QuickBooks upon order submission\n\nIf you have any clinical formula questions or custom perinatal case needs, please feel free to reach out anytime.\n\nWarmly,\nSimba Eun-Hye Shim, L.Ac.\nFounder & Formulator\nSmooth Birth Apothecary\nhttps://smoothbirth.com`
+              `Dear ${data.name || 'Practitioner'},\n\nWelcome to Smooth Birth Apothecary! Your wholesale practitioner credentials for ${data.clinic || 'your practice'} have been verified and approved by Smooth Birth Apothecary.\n\nYou can now log into the wholesale dispensary portal to view clinical formulas and place restocking orders directly at:\nhttps://smoothbirth.com/wholesale.html\n\nWholesale Ordering Guidelines:\n• Minimum batch size per formula: 8 oz (8 x 1 oz bottles or 4 x 2 oz bottles)\n• FREE direct shipping on all orders over $250\n• Invoicing sent via Square / QuickBooks upon order submission\n\nIf you have any clinical formula questions or custom perinatal case needs, please feel free to reach out anytime.\n\nWarmly,\nSmooth Birth Apothecary\nClinical Dispensary Team\nhttps://smoothbirth.com`
             )}" class="btn" style="width: 100%; box-sizing: border-box; margin-bottom: 0.75rem; text-align: center;">
               ✉️ Send Welcome Email to Practitioner &rarr;
             </a>

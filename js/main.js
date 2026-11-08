@@ -777,7 +777,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     feedbackBox.style.color = '#B71C1C';
 
                     const mailtoSubject = encodeURIComponent(`Wholesale Order Request - ${clinicName}`);
-                    const mailtoBody = encodeURIComponent(`Hi Simba,\n\nHere is our wholesale order request for ${clinicName}:\n\nPrimary Contact: ${contactName}\nPhone: ${contactPhone}\nShipping Address: ${shippingAddress}\n\n${orderSummaryFormatted ? orderSummaryFormatted.value : ''}\n\nSpecial Instructions: ${notes}`);
+                    const mailtoBody = encodeURIComponent(`Hello Smooth Birth Team,\n\nHere is our wholesale order request for ${clinicName}:\n\nPrimary Contact: ${contactName}\nPhone: ${contactPhone}\nShipping Address: ${shippingAddress}\n\n${orderSummaryFormatted ? orderSummaryFormatted.value : ''}\n\nSpecial Instructions: ${notes}`);
 
                     feedbackBox.innerHTML = `<strong>Submission Notice:</strong> ${err.message || 'We could not reach the form submission server.'}<br><br>
                     <a href="mailto:hello@smoothbirth.com?subject=${mailtoSubject}&body=${mailtoBody}" style="color: #B71C1C; font-weight: 700; text-decoration: underline;">
