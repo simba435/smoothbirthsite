@@ -57,6 +57,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* -----------------------------------------------------------
+     * 1b. Navigation Dropdown Hover Intent (Grace Period)
+     * ----------------------------------------------------------- */
+    document.querySelectorAll('.nav-item-dropdown').forEach(dropdown => {
+        let closeTimer = null;
+
+        const openMenu = () => {
+            if (closeTimer) {
+                clearTimeout(closeTimer);
+                closeTimer = null;
+            }
+            dropdown.classList.add('is-open');
+        };
+
+        const closeMenu = () => {
+            if (closeTimer) clearTimeout(closeTimer);
+            closeTimer = setTimeout(() => {
+                dropdown.classList.remove('is-open');
+            }, 300); // 300ms grace period keeps menu rock-solid during mouse movement
+        };
+
+        dropdown.addEventListener('mouseenter', openMenu);
+        dropdown.addEventListener('mouseleave', closeMenu);
+    });
+
+    /* -----------------------------------------------------------
      * 2. Intersection Observer for Scroll Animations
      * ----------------------------------------------------------- */
     const revealElements = document.querySelectorAll('.reveal');
