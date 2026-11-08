@@ -10,8 +10,8 @@ window.SMOOTH_BIRTH_CONFIG = {
     formspreeRegEndpoint: "https://formspree.io/f/xbglpwbe",
     // Cloudflare Turnstile Site Key
     turnstileSiteKey: "0x4AAAAAAFUz1RMAT1FQIPVT",
-    // Clerk Publishable Key (Smooth Birth Apothecary app_3LnUVPN9ZVBrm1y0hU7NAKp8hxc)
-    clerkPublishableKey: "pk_test_c3BsZW5kaWQtYmFkZ2VyLTQ1MTIuY2xlcmsuYWNjb3VudHMuZGV2JA",
+    // Clerk Publishable Key (Smooth Birth Apothecary production)
+    clerkPublishableKey: "pk_live_Y2xlcmsuc21vb3RoYmlydGguY29tJA",
     // Default dispensary access password for approved practitioners
     practitionerPassword: "smoothbirth"
 };
