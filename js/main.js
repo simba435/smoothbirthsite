@@ -22,14 +22,22 @@ document.addEventListener('DOMContentLoaded', () => {
      * 1. Navigation Bar Scroll Effect & Mobile Menu
      * ----------------------------------------------------------- */
     const navbar = document.getElementById('navbar');
+    const heroSection = document.querySelector('.hero');
+
     if (navbar) {
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 40) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
+        if (heroSection) {
+            // Homepage with dark hero: toggle scrolled styling on scroll
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 40) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+        } else {
+            // Subpages (about, wholesale, tinctures): navbar must permanently stay scrolled/light
+            navbar.classList.add('scrolled');
+        }
     }
 
     const hamburger = document.getElementById('hamburger');
