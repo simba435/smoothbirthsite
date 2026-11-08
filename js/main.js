@@ -198,11 +198,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const viewApply = document.getElementById('view-apply');
     const sessionDisplay = document.getElementById('session-user-display');
     const btnToggleLogin = document.getElementById('btn-toggle-login');
+    const btnTogglePassLogin = document.getElementById('btn-toggle-pass-login');
     const btnCancelLogin = document.getElementById('btn-cancel-login');
     const loginCard = document.getElementById('practitioner-login-card');
     const loginForm = document.getElementById('practitioner-login-form');
     const loginError = document.getElementById('login-error-msg');
     const btnLogout = document.getElementById('btn-practitioner-logout');
+    const clerkUserButtonMount = document.getElementById('clerk-user-button');
 
     const AUTH_STORAGE_KEY = 'sb_practitioner_session';
 
@@ -227,67 +229,146 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) {}
     };
 
-    const renderWholesaleView = () => {
-        const session = getPractitionerSession();
-        const isLoggedIn = !!(session && session.isLoggedIn);
+    // Centralized View Renderer for Wholesale Portal
+    const showMasterOrderView = (sessionInfo) => {
+        if (viewOrder) {
+            viewOrder.classList.add('active');
+            viewOrder.style.display = 'block';
+        }
+        if (viewApply) {
+            viewApply.classList.remove('active');
+            viewApply.style.display = 'none';
+        }
+        if (sessionDisplay) {
+            sessionDisplay.textContent = sessionInfo.email || 'Verified Practitioner';
+        }
+        const orderEmail = document.getElementById('order-email');
+        if (orderEmail && !orderEmail.value && sessionInfo.email && sessionInfo.email.includes('@')) {
+            orderEmail.value = sessionInfo.email;
+        }
+        if (loginCard) {
+            loginCard.style.display = 'none';
+        }
 
-        if (isLoggedIn) {
-            // Logged in: Show Master Order Form only
-            if (viewOrder) {
-                viewOrder.classList.add('active');
-                viewOrder.style.display = 'block';
-            }
-            if (viewApply) {
-                viewApply.classList.remove('active');
-                viewApply.style.display = 'none';
-            }
-            if (sessionDisplay) {
-                sessionDisplay.textContent = session.email || 'Verified Practitioner';
-            }
-            const orderEmail = document.getElementById('order-email');
-            if (orderEmail && !orderEmail.value && session.email) {
-                orderEmail.value = session.email;
-            }
-            if (loginCard) {
-                loginCard.style.display = 'none';
+        if (sessionInfo.type === 'clerk') {
+            if (window.Clerk && clerkUserButtonMount) {
+                try {
+                    window.Clerk.mountUserButton(clerkUserButtonMount);
+                } catch (e) {}
             }
         } else {
-            // Logged out: Show Sign Up only
-            if (viewOrder) {
-                viewOrder.classList.remove('active');
-                viewOrder.style.display = 'none';
+            if (clerkUserButtonMount) {
+                clerkUserButtonMount.innerHTML = '';
             }
-            if (viewApply) {
-                viewApply.classList.add('active');
-                viewApply.style.display = 'block';
-            }
+        }
+        if (btnLogout) {
+            btnLogout.style.display = 'inline-block';
         }
     };
 
-    // Initialize portal view state on load
+    const showApplicationView = () => {
+        if (viewOrder) {
+            viewOrder.classList.remove('active');
+            viewOrder.style.display = 'none';
+        }
+        if (viewApply) {
+            viewApply.classList.add('active');
+            viewApply.style.display = 'block';
+        }
+        if (clerkUserButtonMount) {
+            clerkUserButtonMount.innerHTML = '';
+        }
+        if (loginCard) {
+            loginCard.style.display = 'none';
+        }
+    };
+
+    // Unified auth state evaluator: checks Clerk user first, then local password session
+    const syncPortalAuthState = (clerkUser) => {
+        // 1. If Clerk reports an authenticated user, Clerk auth takes precedence
+        if (clerkUser) {
+            const email = clerkUser.primaryEmailAddress ? clerkUser.primaryEmailAddress.emailAddress : (clerkUser.fullName || 'Verified Practitioner');
+            showMasterOrderView({ type: 'clerk', email: email, user: clerkUser });
+
+            // Prefill all Clinic & Shipping fields from Clerk user metadata
+            const contactInput = document.getElementById('order-contact');
+            const emailInput = document.getElementById('order-email');
+            const phoneInput = document.getElementById('order-phone');
+            const clinicInput = document.getElementById('order-clinic');
+            const addressInput = document.getElementById('order-address');
+
+            const meta = clerkUser.unsafeMetadata || clerkUser.publicMetadata || {};
+
+            if (contactInput && !contactInput.value) {
+                contactInput.value = clerkUser.fullName || '';
+            }
+            if (emailInput && !emailInput.value) {
+                emailInput.value = email;
+            }
+            if (phoneInput && !phoneInput.value) {
+                phoneInput.value = clerkUser.primaryPhoneNumber ? clerkUser.primaryPhoneNumber.phoneNumber : (meta.phone || '');
+            }
+            if (clinicInput && !clinicInput.value && meta.clinicName) {
+                clinicInput.value = meta.clinicName;
+            }
+            if (addressInput && !addressInput.value && meta.shippingAddress) {
+                addressInput.value = meta.shippingAddress;
+            }
+            return;
+        }
+
+        // 2. If no Clerk user, check if practitioner is authenticated via dispensary password
+        const localSession = getPractitionerSession();
+        if (localSession && localSession.isLoggedIn) {
+            showMasterOrderView({ type: 'password', email: localSession.email || 'Verified Practitioner' });
+            return;
+        }
+
+        // 3. Otherwise, neither is authenticated: show registration / application view
+        showApplicationView();
+    };
+
+    // Expose globally for Clerk callback
+    window.syncPortalAuthState = syncPortalAuthState;
+
+    // Initial check on load (renders instantly from localStorage before Clerk SDK finishes loading)
     if (viewOrder || viewApply) {
-        renderWholesaleView();
+        syncPortalAuthState(null);
     }
 
-    // Toggle Sign In card / Clerk Modal
-    if (btnToggleLogin && loginCard) {
+    // Toggle Dispensary Password Card
+    const togglePasswordCard = () => {
+        if (!loginCard) return;
+        const isVisible = loginCard.style.display === 'block';
+        loginCard.style.display = isVisible ? 'none' : 'block';
+        if (!isVisible) {
+            loginCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            const loginEmailInput = document.getElementById('login-email');
+            if (loginEmailInput) loginEmailInput.focus();
+        }
+    };
+
+    // Primary Sign In button: opens Clerk modal if available, otherwise toggles password card
+    if (btnToggleLogin) {
         btnToggleLogin.addEventListener('click', (e) => {
-            if (window.Clerk) {
-                e.preventDefault();
+            e.preventDefault();
+            if (window.Clerk && window.Clerk.loaded) {
                 try {
                     window.Clerk.openSignIn();
                     return;
                 } catch (err) {
-                    console.warn('Opening Clerk fallback:', err);
+                    console.warn('Clerk openSignIn error:', err);
                 }
             }
-            const isVisible = loginCard.style.display === 'block';
-            loginCard.style.display = isVisible ? 'none' : 'block';
-            if (!isVisible) {
-                loginCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                const loginEmailInput = document.getElementById('login-email');
-                if (loginEmailInput) loginEmailInput.focus();
-            }
+            togglePasswordCard();
+        });
+    }
+
+    // Dedicated button to toggle Dispensary Password Card
+    if (btnTogglePassLogin) {
+        btnTogglePassLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            togglePasswordCard();
         });
     }
 
@@ -298,7 +379,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Handle Sign In submission
+    // Handle Sign In submission with Dispensary Password
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -319,7 +400,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     email: email,
                     loginTime: new Date().toISOString()
                 });
-                renderWholesaleView();
+                syncPortalAuthState(window.Clerk && window.Clerk.user ? window.Clerk.user : null);
                 window.scrollTo({ top: 120, behavior: 'smooth' });
             } else {
                 if (loginError) {
@@ -330,11 +411,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Handle Log Out
+    // Universal Log Out: clears local session and signs out of Clerk
     if (btnLogout) {
-        btnLogout.addEventListener('click', () => {
+        btnLogout.addEventListener('click', async () => {
             clearPractitionerSession();
-            renderWholesaleView();
+            if (window.Clerk && window.Clerk.user) {
+                try {
+                    await window.Clerk.signOut();
+                } catch (e) {
+                    console.warn('Clerk signOut error:', e);
+                }
+            }
+            syncPortalAuthState(null);
             window.scrollTo({ top: 120, behavior: 'smooth' });
         });
     }
@@ -716,88 +804,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     await clerk.load({ publishableKey: window.SMOOTH_BIRTH_CONFIG.clerkPublishableKey });
                 }
 
-                const syncClerkAuthState = (user) => {
-                    const viewOrder = document.getElementById('view-order');
-                    const viewApply = document.getElementById('view-apply');
-                    const sessionDisplay = document.getElementById('session-user-display');
-                    const logoutBtn = document.getElementById('btn-practitioner-logout');
-                    const clerkUserButtonMount = document.getElementById('clerk-user-button');
-
-                    if (user) {
-                        // User is authenticated via Clerk
-                        if (viewOrder) {
-                            viewOrder.classList.add('active');
-                            viewOrder.style.display = 'block';
-                        }
-                        if (viewApply) {
-                            viewApply.classList.remove('active');
-                            viewApply.style.display = 'none';
-                        }
-                        if (sessionDisplay) {
-                            sessionDisplay.textContent = user.primaryEmailAddress ? user.primaryEmailAddress.emailAddress : (user.fullName || 'Verified Practitioner');
-                        }
-
-                        // Mount Clerk User Button (Account management & Sign Out)
-                        if (clerkUserButtonMount) {
-                            clerk.mountUserButton(clerkUserButtonMount);
-                        }
-                        if (logoutBtn) {
-                            logoutBtn.style.display = 'none'; // Replaced by Clerk User Button
-                        }
-
-                        // Prefill all Clinic & Shipping fields from user metadata
-                        const contactInput = document.getElementById('order-contact');
-                        const emailInput = document.getElementById('order-email');
-                        const phoneInput = document.getElementById('order-phone');
-                        const clinicInput = document.getElementById('order-clinic');
-                        const addressInput = document.getElementById('order-address');
-
-                        const meta = user.unsafeMetadata || user.publicMetadata || {};
-
-                        if (contactInput && !contactInput.value) {
-                            contactInput.value = user.fullName || '';
-                        }
-                        if (emailInput && !emailInput.value) {
-                            emailInput.value = user.primaryEmailAddress ? user.primaryEmailAddress.emailAddress : '';
-                        }
-                        if (phoneInput && !phoneInput.value) {
-                            phoneInput.value = user.primaryPhoneNumber ? user.primaryPhoneNumber.phoneNumber : (meta.phone || '');
-                        }
-                        if (clinicInput && !clinicInput.value && meta.clinicName) {
-                            clinicInput.value = meta.clinicName;
-                        }
-                        if (addressInput && !addressInput.value && meta.shippingAddress) {
-                            addressInput.value = meta.shippingAddress;
-                        }
-                    } else {
-                        // Logged out
-                        if (viewOrder) {
-                            viewOrder.classList.remove('active');
-                            viewOrder.style.display = 'none';
-                        }
-                        if (viewApply) {
-                            viewApply.classList.add('active');
-                            viewApply.style.display = 'block';
-                        }
-                    }
-                };
-
                 // Listen to live Clerk state updates (sign in, sign out)
                 clerk.addListener(({ user }) => {
-                    syncClerkAuthState(user);
+                    if (window.syncPortalAuthState) {
+                        window.syncPortalAuthState(user);
+                    }
                 });
 
-                // Initial sync
-                syncClerkAuthState(clerk.user);
-
-                // Override manual login trigger to open Clerk's native modal
-                const btnToggleLogin = document.getElementById('btn-toggle-login');
-                if (btnToggleLogin) {
-                    btnToggleLogin.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        clerk.openSignIn();
-                    }, true);
+                // Initial sync with Clerk user state
+                if (window.syncPortalAuthState) {
+                    window.syncPortalAuthState(clerk.user);
                 }
 
                 // When order form is submitted, persist updated clinic info to Clerk user metadata
