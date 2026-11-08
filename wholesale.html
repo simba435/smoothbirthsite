@@ -470,17 +470,17 @@
 
                 <!-- Returning Practitioner Sign In Callout -->
                 <div class="practitioner-auth-callout" style="background: #FAFAFA; border: 1px solid var(--border-light); border-radius: 6px; padding: 1.1rem 1.4rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-                    <div>
+                    <div style="max-width: 580px;">
                         <span style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; color: var(--gold-dark); display: block; margin-bottom: 0.15rem;">Approved Practitioner?</span>
                         <strong style="color: var(--primary-dark); font-size: 0.98rem;">Already have verified dispensary credentials?</strong>
-                        <p style="margin: 0.15rem 0 0; font-size: 0.82rem; color: var(--text-light);">Sign in with your practitioner account or enter your dispensary access password.</p>
+                        <p style="margin: 0.15rem 0 0; font-size: 0.82rem; color: var(--text-light);">Sign in with your practitioner account to access the dispensary order portal.</p>
                     </div>
-                    <div style="display: flex; gap: 0.65rem; align-items: center; flex-wrap: wrap;">
+                    <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 0.4rem;">
                         <button type="button" id="btn-toggle-login" class="btn-primary" style="padding: 0.65rem 1.4rem; font-size: 0.82rem; white-space: nowrap;">
                             Practitioner Sign In &rarr;
                         </button>
-                        <button type="button" id="btn-toggle-pass-login" style="background: #FFFFFF; border: 1px solid var(--border-gold); border-radius: 4px; padding: 0.6rem 1rem; font-size: 0.8rem; font-weight: 600; color: var(--primary-dark); cursor: pointer; white-space: nowrap; transition: all 0.2s ease;">
-                            Dispensary Password
+                        <button type="button" id="btn-toggle-pass-login" style="background: none; border: none; padding: 0.1rem 0; font-size: 0.76rem; color: var(--text-light); text-decoration: underline; cursor: pointer; transition: color 0.2s ease;" onmouseover="this.style.color='var(--primary-dark)'" onmouseout="this.style.color='var(--text-light)'">
+                            Have a dispensary access password?
                         </button>
                     </div>
                 </div>
