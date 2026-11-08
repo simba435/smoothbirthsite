@@ -171,31 +171,39 @@ export default {
         if (userSearchRes.ok) {
           const users = await userSearchRes.json();
           if (Array.isArray(users) && users.length > 0) {
-            // Existing user found: update their metadata to approved: true
+            // Existing user found: check if already approved to prevent duplicate emails
             const user = users[0];
             const currentPublicMeta = user.public_metadata || {};
-            const updateRes = await fetch(`https://api.clerk.com/v1/users/${user.id}/metadata`, {
-              method: 'PATCH',
-              headers: {
-                'Authorization': `Bearer ${env.CLERK_SECRET_KEY}`,
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                public_metadata: {
-                  ...currentPublicMeta,
-                  approved: true,
-                  clinicName: clinic || currentPublicMeta.clinicName || '',
-                  approvedAt: new Date().toISOString()
-                }
-              })
-            });
+            const isAlreadyApproved = currentPublicMeta.approved === true;
 
-            if (updateRes.ok) {
+            if (isAlreadyApproved) {
               results.clerkUpdated = true;
-              results.details.push(`Existing Clerk account (${user.id}) unlocked and set to approved.`);
+              results.alreadyApproved = true;
+              results.details.push(`Practitioner account (${user.id}) is already verified and active.`);
             } else {
-              const errBody = await updateRes.text();
-              results.details.push(`Clerk metadata update failed: ${errBody}`);
+              const updateRes = await fetch(`https://api.clerk.com/v1/users/${user.id}/metadata`, {
+                method: 'PATCH',
+                headers: {
+                  'Authorization': `Bearer ${env.CLERK_SECRET_KEY}`,
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  public_metadata: {
+                    ...currentPublicMeta,
+                    approved: true,
+                    clinicName: clinic || currentPublicMeta.clinicName || '',
+                    approvedAt: new Date().toISOString()
+                  }
+                })
+              });
+
+              if (updateRes.ok) {
+                results.clerkUpdated = true;
+                results.details.push(`Existing Clerk account (${user.id}) unlocked and set to approved.`);
+              } else {
+                const errBody = await updateRes.text();
+                results.details.push(`Clerk metadata update failed: ${errBody}`);
+              }
             }
           } else {
             // User has not registered in Clerk yet: send approved Clerk invitation
@@ -235,87 +243,91 @@ export default {
 
     // 3. Dispatch Branded Welcome Email (via Resend if RESEND_API_KEY configured)
     if (env.RESEND_API_KEY) {
-      try {
-        const practitionerDisplayName = name || 'Practitioner';
-        const fromEmail = env.FROM_EMAIL || 'Smooth Birth Apothecary <orders@smoothbirth.com>';
-        const wholesalePortalUrl = `${env.SITE_URL || 'https://smoothbirth.com'}/wholesale.html`;
+      if (results.alreadyApproved) {
+        results.details.push('Practitioner was previously approved; skipped duplicate welcome email.');
+      } else {
+        try {
+          const practitionerDisplayName = name || 'Practitioner';
+          const fromEmail = env.FROM_EMAIL || 'Smooth Birth Apothecary <orders@smoothbirth.com>';
+          const wholesalePortalUrl = `${env.SITE_URL || 'https://smoothbirth.com'}/wholesale.html`;
 
-        const emailHtml = `
-          <!DOCTYPE html>
-          <html>
-          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #FAFAF8; margin: 0; padding: 24px; color: #2A2A2A;">
-            <table align="center" width="100%" max-width="600" style="max-width: 600px; background: #FFFFFF; border-radius: 8px; border: 1px solid #EAE6DF; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.04);">
-              <tr>
-                <td style="background: #2D3E30; padding: 28px 32px; text-align: center;">
-                  <span style="font-size: 28px; color: #D4BFA0; display: block; margin-bottom: 4px;">❧</span>
-                  <h1 style="color: #FFFFFF; font-size: 22px; font-weight: 400; margin: 0; letter-spacing: 0.5px;">Smooth Birth Apothecary</h1>
-                  <p style="color: #D4BFA0; font-size: 12px; margin: 6px 0 0; text-transform: uppercase; letter-spacing: 2px;">Clinical Botanical Restocking</p>
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 36px 32px;">
-                  <h2 style="color: #2D3E30; font-size: 20px; font-weight: 500; margin: 0 0 16px;">Welcome to the Practitioner Dispensary</h2>
-                  <p style="font-size: 15px; line-height: 1.7; color: #4A4A4A; margin: 0 0 16px;">
-                    Dear ${practitionerDisplayName},
-                  </p>
-                  <p style="font-size: 15px; line-height: 1.7; color: #4A4A4A; margin: 0 0 20px;">
-                    Your practitioner credentials for <strong>${clinic || 'your clinical practice'}</strong> have been verified and approved by Smooth Birth Apothecary.
-                  </p>
-                  <div style="background: #F7F4EF; border-left: 3px solid #B8956A; padding: 14px 18px; border-radius: 4px; margin: 0 0 24px; font-size: 14px; line-height: 1.6; color: #4A4A4A;">
-                    <strong>Wholesale Ordering Guidelines:</strong><br>
-                    &bull; Minimum batch size per formula: <strong>8 oz</strong> (8 &times; 1 oz bottles or 4 &times; 2 oz bottles)<br>
-                    &bull; <strong>FREE direct shipping</strong> on all orders over $250<br>
-                    &bull; Frictionless invoicing sent directly to your clinic via Square / QuickBooks
-                  </div>
-                  <div style="text-align: center; margin: 30px 0;">
-                    <a href="${wholesalePortalUrl}" style="background-color: #5E7F65; color: #FFFFFF; padding: 14px 28px; border-radius: 4px; text-decoration: none; font-weight: 600; font-size: 14px; display: inline-block;">
-                      Access Wholesale Master Order Form &rarr;
-                    </a>
-                  </div>
-                  <p style="font-size: 13px; line-height: 1.6; color: #717171; margin: 24px 0 0;">
-                    You can sign in using your email address (<strong>${email}</strong>) or your clinic dispensary credentials.<br>
-                    If you have clinical formula questions or custom client needs, feel free to reply directly to this email.
-                  </p>
-                  <p style="font-size: 14px; line-height: 1.6; color: #4A4A4A; margin: 24px 0 0;">
-                    Warmly,<br>
-                    <strong>Smooth Birth Apothecary</strong><br>
-                    <span style="font-size: 13px; color: #717171;">Clinical Dispensary Team</span>
-                  </p>
-                </td>
-              </tr>
-              <tr>
-                <td style="background: #FAFAF8; padding: 20px 32px; text-align: center; border-top: 1px solid #EAE6DF; font-size: 12px; color: #9A9A9A;">
-                  &copy; 2026 Smooth Birth Apothecary LLC &bull; Boulder, Colorado &bull; <a href="https://smoothbirth.com" style="color: #5E7F65; text-decoration: none;">smoothbirth.com</a>
-                </td>
-              </tr>
-            </table>
-          </body>
-          </html>
-        `;
+          const emailHtml = `
+            <!DOCTYPE html>
+            <html>
+            <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #FAFAF8; margin: 0; padding: 24px; color: #2A2A2A;">
+              <table align="center" width="100%" max-width="600" style="max-width: 600px; background: #FFFFFF; border-radius: 8px; border: 1px solid #EAE6DF; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.04);">
+                <tr>
+                  <td style="background: #2D3E30; padding: 28px 32px; text-align: center;">
+                    <span style="font-size: 28px; color: #D4BFA0; display: block; margin-bottom: 4px;">❧</span>
+                    <h1 style="color: #FFFFFF; font-size: 22px; font-weight: 400; margin: 0; letter-spacing: 0.5px;">Smooth Birth Apothecary</h1>
+                    <p style="color: #D4BFA0; font-size: 12px; margin: 6px 0 0; text-transform: uppercase; letter-spacing: 2px;">Clinical Botanical Restocking</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 36px 32px;">
+                    <h2 style="color: #2D3E30; font-size: 20px; font-weight: 500; margin: 0 0 16px;">Welcome to the Practitioner Dispensary</h2>
+                    <p style="font-size: 15px; line-height: 1.7; color: #4A4A4A; margin: 0 0 16px;">
+                      Dear ${practitionerDisplayName},
+                    </p>
+                    <p style="font-size: 15px; line-height: 1.7; color: #4A4A4A; margin: 0 0 20px;">
+                      Your practitioner credentials for <strong>${clinic || 'your clinical practice'}</strong> have been verified and approved by Smooth Birth Apothecary.
+                    </p>
+                    <div style="background: #F7F4EF; border-left: 3px solid #B8956A; padding: 14px 18px; border-radius: 4px; margin: 0 0 24px; font-size: 14px; line-height: 1.6; color: #4A4A4A;">
+                      <strong>Wholesale Ordering Guidelines:</strong><br>
+                      &bull; Minimum batch size per formula: <strong>8 oz</strong> (8 &times; 1 oz bottles or 4 &times; 2 oz bottles)<br>
+                      &bull; <strong>FREE direct shipping</strong> on all orders over $250<br>
+                      &bull; Frictionless invoicing sent directly to your clinic via Square / QuickBooks
+                    </div>
+                    <div style="text-align: center; margin: 30px 0;">
+                      <a href="${wholesalePortalUrl}" style="background-color: #5E7F65; color: #FFFFFF; padding: 14px 28px; border-radius: 4px; text-decoration: none; font-weight: 600; font-size: 14px; display: inline-block;">
+                        Access Wholesale Master Order Form &rarr;
+                      </a>
+                    </div>
+                    <p style="font-size: 13px; line-height: 1.6; color: #717171; margin: 24px 0 0;">
+                      You can sign in using your email address (<strong>${email}</strong>) or your clinic dispensary credentials.<br>
+                      If you have clinical formula questions or custom client needs, feel free to reply directly to this email.
+                    </p>
+                    <p style="font-size: 14px; line-height: 1.6; color: #4A4A4A; margin: 24px 0 0;">
+                      Warmly,<br>
+                      <strong>Smooth Birth Apothecary</strong><br>
+                      <span style="font-size: 13px; color: #717171;">Clinical Dispensary Team</span>
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="background: #FAFAF8; padding: 20px 32px; text-align: center; border-top: 1px solid #EAE6DF; font-size: 12px; color: #9A9A9A;">
+                    &copy; 2026 Smooth Birth Apothecary LLC &bull; Boulder, Colorado &bull; <a href="https://smoothbirth.com" style="color: #5E7F65; text-decoration: none;">smoothbirth.com</a>
+                  </td>
+                </tr>
+              </table>
+            </body>
+            </html>
+          `;
 
-        const resendRes = await fetch('https://api.resend.com/emails', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${env.RESEND_API_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            from: fromEmail,
-            to: [email],
-            subject: 'Your Smooth Birth Wholesale Practitioner Account is Approved!',
-            html: emailHtml
-          })
-        });
+          const resendRes = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              from: fromEmail,
+              to: [email],
+              subject: 'Your Smooth Birth Wholesale Practitioner Account is Approved!',
+              html: emailHtml
+            })
+          });
 
-        if (resendRes.ok) {
-          results.emailSent = true;
-          results.details.push(`Welcome email successfully sent to ${email} via Resend.`);
-        } else {
-          const resendErr = await resendRes.text();
-          results.details.push(`Resend email delivery note: ${resendErr}`);
+          if (resendRes.ok) {
+            results.emailSent = true;
+            results.details.push(`Welcome email successfully sent to ${email} via Resend.`);
+          } else {
+            const resendErr = await resendRes.text();
+            results.details.push(`Resend email delivery note: ${resendErr}`);
+          }
+        } catch (emailErr) {
+          results.details.push(`Email delivery error: ${emailErr.message}`);
         }
-      } catch (emailErr) {
-        results.details.push(`Email delivery error: ${emailErr.message}`);
       }
     }
 
@@ -463,15 +475,19 @@ function renderHtmlResponse(data, statusCode = 200) {
           ` : ''}
         </div>
 
-        ${isSuccess && data.email ? `
+        ${isSuccess && data.email && data.results && (data.results.emailSent || data.results.alreadyApproved) ? `
+          <div style="margin-bottom: 1.5rem; background: #E8F5E9; border: 1px solid rgba(46, 125, 50, 0.25); border-radius: 6px; padding: 0.9rem 1.2rem; color: #2E7D32; font-size: 0.88rem; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+            <span>✓</span> Branded welcome email has been delivered to <strong>${data.email}</strong>.
+          </div>
+        ` : isSuccess && data.email ? `
           <div style="margin-bottom: 1.5rem;">
             <a href="mailto:${encodeURIComponent(data.email)}?subject=${encodeURIComponent('Your Smooth Birth Wholesale Practitioner Account is Approved!')}&body=${encodeURIComponent(
               `Dear ${data.name || 'Practitioner'},\n\nWelcome to Smooth Birth Apothecary! Your wholesale practitioner credentials for ${data.clinic || 'your practice'} have been verified and approved by Smooth Birth Apothecary.\n\nYou can now log into the wholesale dispensary portal to view clinical formulas and place restocking orders directly at:\nhttps://smoothbirth.com/wholesale.html\n\nWholesale Ordering Guidelines:\n• Minimum batch size per formula: 8 oz (8 x 1 oz bottles or 4 x 2 oz bottles)\n• FREE direct shipping on all orders over $250\n• Invoicing sent via Square / QuickBooks upon order submission\n\nIf you have any clinical formula questions or custom perinatal case needs, please feel free to reach out anytime.\n\nWarmly,\nSmooth Birth Apothecary\nClinical Dispensary Team\nhttps://smoothbirth.com`
             )}" class="btn" style="width: 100%; box-sizing: border-box; margin-bottom: 0.75rem; text-align: center;">
-              ✉️ Send Welcome Email to Practitioner &rarr;
+              ✉️ Send Manual Welcome Email &rarr;
             </a>
             <div style="font-size: 0.78rem; color: #717171;">
-              Tapping above opens your email app with a pre-written welcome message ready for you to review and send.
+              Automated delivery was unavailable; tap above to send directly from your mail app.
             </div>
           </div>
         ` : ''}
