@@ -377,77 +377,50 @@ document.addEventListener('DOMContentLoaded', () => {
         syncPortalAuthState(null);
     }
 
-    // Toggle Dispensary Password Card
-    const togglePasswordCard = () => {
-        if (!loginCard) return;
-        const isVisible = loginCard.style.display === 'block';
-        loginCard.style.display = isVisible ? 'none' : 'block';
-        if (!isVisible) {
-            loginCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            const loginEmailInput = document.getElementById('login-email');
-            if (loginEmailInput) loginEmailInput.focus();
-        }
-    };
-
-    // Primary Sign In button: opens Clerk modal if available, otherwise toggles password card
+    // Primary Sign In button: opens Clerk modal or redirects to hosted Clerk sign-in
     if (btnToggleLogin) {
-        btnToggleLogin.addEventListener('click', (e) => {
+        btnToggleLogin.addEventListener('click', async (e) => {
             e.preventDefault();
-            if (window.Clerk && window.Clerk.loaded) {
-                try {
-                    window.Clerk.openSignIn();
-                    return;
-                } catch (err) {
-                    console.warn('Clerk openSignIn error:', err);
+            const originalText = btnToggleLogin.innerHTML;
+            btnToggleLogin.innerHTML = 'Connecting to Sign In...';
+            btnToggleLogin.disabled = true;
+
+            const openClerkModal = async () => {
+                if (window.Clerk) {
+                    try {
+                        if (!window.Clerk.loaded) {
+                            await window.Clerk.load({ publishableKey: window.SMOOTH_BIRTH_CONFIG.clerkPublishableKey });
+                        }
+                        window.Clerk.openSignIn({
+                            afterSignInUrl: window.location.href,
+                            afterSignUpUrl: window.location.href
+                        });
+                        btnToggleLogin.innerHTML = originalText;
+                        btnToggleLogin.disabled = false;
+                        return true;
+                    } catch (err) {
+                        console.warn('Clerk openSignIn error:', err);
+                    }
                 }
-            }
-            togglePasswordCard();
-        });
-    }
+                return false;
+            };
 
-    // Dedicated button to toggle Dispensary Password Card
-    if (btnTogglePassLogin) {
-        btnTogglePassLogin.addEventListener('click', (e) => {
-            e.preventDefault();
-            togglePasswordCard();
-        });
-    }
-
-    if (btnCancelLogin && loginCard) {
-        btnCancelLogin.addEventListener('click', () => {
-            loginCard.style.display = 'none';
-            if (loginError) loginError.style.display = 'none';
-        });
-    }
-
-    // Handle Sign In submission with Dispensary Password
-    if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const emailInput = document.getElementById('login-email');
-            const passInput = document.getElementById('login-password');
-            const email = emailInput ? emailInput.value.trim() : '';
-            const password = passInput ? passInput.value.trim() : '';
-
-            // Verification check: accept configured password (default: "smoothbirth", case-insensitive)
-            // as well as "apothecary" or "midwife"
-            const configuredPass = (window.SMOOTH_BIRTH_CONFIG.practitionerPassword || 'smoothbirth').toLowerCase();
-            const entered = password.toLowerCase();
-
-            if (entered === configuredPass || entered === 'apothecary' || entered === 'midwife') {
-                if (loginError) loginError.style.display = 'none';
-                setPractitionerSession({
-                    isLoggedIn: true,
-                    email: email,
-                    loginTime: new Date().toISOString()
-                });
-                syncPortalAuthState(window.Clerk && window.Clerk.user ? window.Clerk.user : null);
-                window.scrollTo({ top: 120, behavior: 'smooth' });
-            } else {
-                if (loginError) {
-                    loginError.style.display = 'block';
-                    loginError.innerHTML = '<strong>Invalid Password:</strong> The password you entered does not match our records. Please check your practitioner approval email or contact <a href="mailto:hello@smoothbirth.com" style="color: #B71C1C; text-decoration: underline;">hello@smoothbirth.com</a>.';
-                }
+            const success = await openClerkModal();
+            if (!success) {
+                let attempts = 0;
+                const checkInterval = setInterval(async () => {
+                    attempts++;
+                    const opened = await openClerkModal();
+                    if (opened || attempts >= 15) {
+                        clearInterval(checkInterval);
+                        btnToggleLogin.innerHTML = originalText;
+                        btnToggleLogin.disabled = false;
+                        if (attempts >= 15 && !opened) {
+                            // Direct fallback to Clerk hosted sign-in page
+                            window.location.href = 'https://accounts.smoothbirth.com/sign-in';
+                        }
+                    }
+                }, 100);
             }
         });
     }
