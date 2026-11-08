@@ -10,30 +10,41 @@ Hosted on **GitHub Pages** with DNS and CDN managed via **Cloudflare**.
 
 ```
 smoothbirthsite/
-├── index.html              # Public homepage (Hero, Formula Accordions, Meet Founder, FAQ, FDA Disclaimer)
+├── index.html              # Public homepage (Hero, 4 Horizontal Phase Accordions, FAQ, FDA Disclaimer)
 ├── index-staging.html      # Staging duplicate of index.html
+├── about.html              # Meet the Founder & Formulator (Simba Eun-Hye Shim, L.Ac. clinical background)
+├── about-staging.html      # Staging duplicate of about.html
 ├── wholesale.html          # B2B Portal (Live Wholesale Order Calculator, Free Shipping Meter, Registration Form)
 ├── wholesale-staging.html  # Staging duplicate of wholesale.html
+├── swell-away.html         # Phase 1: Swell Away (2 oz) Product Page
+├── deep-rest-1.html        # Phase 1: Deep Rest 1 (2 oz) Product Page
+├── deep-rest-2.html        # Phase 1: Deep Rest 2 (2 oz) Product Page
+├── cool-center.html        # Phase 1: Cool Center (1 oz) Product Page
+├── getting-ready.html      # Phase 2: Getting Ready (1 oz) Product Page
+├── boost-up.html           # Phase 2: Boost Up (1 oz) Product Page
+├── more-oomph.html         # Phase 3: More Oomph (2 oz) Product Page
+├── high-baby.html          # Phase 3: High Baby (2 oz) Product Page
+├── turn-around.html        # Phase 3: Turn Around (2 oz) Product Page
+├── abundant-flow.html      # Phase 4: Abundant Flow (2 oz) Product Page
 ├── thanks.html             # Submission confirmation page
 ├── thanks-staging.html     # Staging duplicate of thanks.html
 ├── privacy.html            # Healthcare & B2B Privacy Policy
 ├── privacy-staging.html    # Staging duplicate of privacy.html
 ├── terms.html              # Terms of Service & FDA Regulatory Notices
 ├── terms-staging.html      # Staging duplicate of terms.html
-├── promote-staging.sh      # Helper script to promote staging changes to production
+├── promote-staging.sh      # Helper script to promote staging changes to production (17 pages supported)
 ├── CNAME                   # Custom domain pointer: smoothbirth.com
 ├── robots.txt              # Search engine crawling rules (blocks staging indexing)
-├── sitemap.xml             # XML sitemap for SEO
-├── llms.txt                # AI search & LLM indexing manifest
+├── sitemap.xml             # XML sitemap for SEO (includes all core, about, and 10 tincture pages)
+├── llms.txt                # AI search & LLM indexing manifest (comprehensive formula catalog)
 ├── css/
 │   └── style.css           # Custom responsive styles (Sage Green & Warm Gold palette, Fraunces/Inter typography)
 ├── js/
-│   └── main.js             # Formula drawers, accordion logic, batch order math, Formspree & Clerk hooks
+│   └── main.js             # Accordion logic, batch order math, Formspree & Clerk BaaS integration
 └── images/
     ├── favicon.png         # Site favicon
     ├── simba-headshot.webp # Founder headshot
-    ├── bottles-prenatal.jpg# Studio bottle showcase
-    ├── bottles-labor.jpg   # Studio bottle showcase
+    ├── bottles/            # High-resolution bottle photography for each of the 10 tinctures
     └── products/           # 10 label banners and extracted badge crops
 ```
 
@@ -145,12 +156,14 @@ The site includes full-fidelity duplicate staging pages ending in `-staging.html
 ### Promoting Staged Changes to Production:
 Use the included `promote-staging.sh` helper to promote individual or all pages with 1 command:
 ```bash
-# Promote all 5 staging pages to production
+# Promote all 17 staging pages to production
 ./promote-staging.sh all
 
 # Or promote an individual page
 ./promote-staging.sh index
+./promote-staging.sh about
 ./promote-staging.sh wholesale
+./promote-staging.sh swell-away
 ```
 The promotion script automatically:
 1. Strips the staging banner and `noindex` meta tags.

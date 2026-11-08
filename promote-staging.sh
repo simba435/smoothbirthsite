@@ -8,7 +8,25 @@ set -e
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$DIR"
 
-PAGES=("index" "wholesale" "thanks" "privacy" "terms")
+PAGES=(
+    "index"
+    "about"
+    "founder"
+    "wholesale"
+    "thanks"
+    "privacy"
+    "terms"
+    "swell-away"
+    "deep-rest-1"
+    "deep-rest-2"
+    "cool-center"
+    "getting-ready"
+    "boost-up"
+    "more-oomph"
+    "high-baby"
+    "turn-around"
+    "abundant-flow"
+)
 
 promote_page() {
     local page="$1"
@@ -55,45 +73,41 @@ os.chmod('$prod_file', 0o664)
 
 TARGET="${1:-help}"
 
-case "$TARGET" in
-    all)
-        echo "🌿 Promoting ALL staging pages to production..."
-        for p in "${PAGES[@]}"; do
-            promote_page "$p"
-        done
-        echo ""
-        echo "📋 Git diff summary of production files:"
-        git diff index.html wholesale.html thanks.html privacy.html terms.html
-        echo ""
-        echo "🎉 Done! Review diffs above and run:"
-        echo "   git add *.html"
-        echo "   git commit -m 'Promote staged changes to production'"
-        echo "   git push origin main"
-        ;;
-    index|wholesale|thanks|privacy|terms)
-        promote_page "$TARGET"
-        echo ""
-        echo "📋 Git diff for ${TARGET}.html:"
-        git diff "${TARGET}.html"
-        echo ""
-        echo "🎉 Done! Review diff above and run:"
-        echo "   git add ${TARGET}.html"
-        echo "   git commit -m 'Promote ${TARGET} staging to production'"
-        echo "   git push origin main"
-        ;;
-    *)
-        echo "Usage: ./promote-staging.sh <page|all>"
-        echo ""
-        echo "Options:"
-        echo "  all        Promote all 5 staging pages to production"
-        echo "  index      Promote index-staging.html to index.html"
-        echo "  wholesale  Promote wholesale-staging.html to wholesale.html"
-        echo "  thanks     Promote thanks-staging.html to thanks.html"
-        echo "  privacy    Promote privacy-staging.html to privacy.html"
-        echo "  terms      Promote terms-staging.html to terms.html"
-        echo ""
-        echo "Example:"
-        echo "  ./promote-staging.sh index"
-        exit 1
-        ;;
-esac
+if [ "$TARGET" = "all" ]; then
+    echo "🌿 Promoting ALL ${#PAGES[@]} staging pages to production..."
+    for p in "${PAGES[@]}"; do
+        promote_page "$p"
+    done
+    echo ""
+    echo "📋 Git diff summary of production files:"
+    git diff "${PAGES[@]/%/.html}"
+    echo ""
+    echo "🎉 Done! Review diffs above and run:"
+    echo "   git add *.html"
+    echo "   git commit -m 'Promote staged changes to production'"
+    echo "   git push origin main"
+elif [ -f "${TARGET}-staging.html" ]; then
+    promote_page "$TARGET"
+    echo ""
+    echo "📋 Git diff for ${TARGET}.html:"
+    git diff "${TARGET}.html"
+    echo ""
+    echo "🎉 Done! Review diff above and run:"
+    echo "   git add ${TARGET}.html"
+    echo "   git commit -m 'Promote ${TARGET} staging to production'"
+    echo "   git push origin main"
+else
+    echo "Usage: ./promote-staging.sh <page|all>"
+    echo ""
+    echo "Available pages (${#PAGES[@]} total):"
+    for p in "${PAGES[@]}"; do
+        echo "  $p (promotes ${p}-staging.html -> ${p}.html)"
+    done
+    echo "  all (promotes all ${#PAGES[@]} staging pages to production)"
+    echo ""
+    echo "Examples:"
+    echo "  ./promote-staging.sh index"
+    echo "  ./promote-staging.sh swell-away"
+    echo "  ./promote-staging.sh all"
+    exit 1
+fi

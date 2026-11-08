@@ -566,7 +566,11 @@ document.addEventListener('DOMContentLoaded', () => {
             minusBtn.addEventListener('click', () => {
                 let current = parseInt(qtyInput.value, 10) || 0;
                 if (current > 0) {
-                    current = Math.max(0, current - 1);
+                    if (current === min) {
+                        current = 0; // Jump down to 0 if at batch minimum
+                    } else {
+                        current = Math.max(0, current - 1);
+                    }
                     qtyInput.value = current;
                     calculateOrder();
                 }
@@ -610,6 +614,33 @@ document.addEventListener('DOMContentLoaded', () => {
             const totalQty = parseInt(summaryTotalQty.textContent, 10) || 0;
             if (totalQty === 0) {
                 alert('Please select at least one tincture formula with the required batch minimum to submit an order request.');
+                return;
+            }
+
+            // Validate that every selected formula meets its required batch minimum (8 bottles for 1 oz / 4 bottles for 2 oz)
+            const underMinItems = [];
+            orderRows.forEach(row => {
+                const qtyInput = row.querySelector('.qty-input');
+                const qty = parseInt(qtyInput.value, 10) || 0;
+                const min = parseInt(row.getAttribute('data-min'), 10) || 0;
+                const name = row.querySelector('.item-name-col strong').textContent.trim();
+                const size = row.getAttribute('data-size') || '';
+                if (qty > 0 && qty < min) {
+                    underMinItems.push(`${name} (${size}): ${qty} selected (minimum is ${min} bottles)`);
+                }
+            });
+
+            if (underMinItems.length > 0) {
+                const errorText = 'Batch minimum requirement not met for the following formulas (minimum 8 oz batch):\n\n• ' + underMinItems.join('\n• ');
+                if (feedbackBox) {
+                    feedbackBox.style.display = 'block';
+                    feedbackBox.style.background = '#FFF9EE';
+                    feedbackBox.style.border = '1px solid #B86200';
+                    feedbackBox.style.color = '#7A4100';
+                    feedbackBox.innerHTML = `<strong>Batch Minimum Requirement:</strong> Each formula requires a minimum batch order of 8 oz (8 bottles for 1 oz / 4 bottles for 2 oz). Please adjust the following formulas:<ul style="margin: 0.5rem 0 0 1.25rem; padding: 0;">${underMinItems.map(item => `<li>${item}</li>`).join('')}</ul>`;
+                    feedbackBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                alert(errorText);
                 return;
             }
 
