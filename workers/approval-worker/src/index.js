@@ -11,6 +11,16 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    };
+
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { headers: corsHeaders });
+    }
+
     // Health check endpoint
     if (url.pathname === '/' || url.pathname === '/health') {
       return new Response(JSON.stringify({
@@ -18,8 +28,90 @@ export default {
         status: 'healthy',
         timestamp: new Date().toISOString()
       }), {
-        headers: { 'Content-Type': 'application/json' }
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
+    }
+
+    // Practitioner Registration via Clerk Backend API
+    if (url.pathname === '/register' && request.method === 'POST') {
+      try {
+        const body = await request.json();
+        const { email, password, name, clinic, phone, credential, website, notes } = body;
+
+        if (!email || !password) {
+          return new Response(JSON.stringify({ error: 'Email and password are required' }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        if (!env.CLERK_SECRET_KEY) {
+          return new Response(JSON.stringify({ error: 'CLERK_SECRET_KEY not configured in worker environment' }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Call Clerk Backend API to create the user account
+        const clerkRes = await fetch('https://api.clerk.com/v1/users', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${env.CLERK_SECRET_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email_address: [email],
+            password: password,
+            first_name: name || '',
+            public_metadata: {
+              approved: false,
+              clinicName: clinic || '',
+              phone: phone || '',
+              credential: credential || '',
+              website: website || '',
+              appliedAt: new Date().toISOString()
+            }
+          })
+        });
+
+        const clerkData = await clerkRes.json();
+
+        if (!clerkRes.ok) {
+          // If user already exists in Clerk, treat as existing and proceed
+          const isExisting = clerkData.errors && clerkData.errors.some(e => e.code === 'form_identifier_exists');
+          if (isExisting) {
+            return new Response(JSON.stringify({
+              success: true,
+              existing: true,
+              message: 'Account with this email already exists in Clerk.'
+            }), {
+              status: 200,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+
+          const errMsg = clerkData.errors ? clerkData.errors.map(e => e.message).join(', ') : 'Failed to create user in Clerk';
+          return new Response(JSON.stringify({ error: errMsg }), {
+            status: clerkRes.status,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        return new Response(JSON.stringify({
+          success: true,
+          userId: clerkData.id,
+          message: 'Practitioner user created in Clerk with pending approval.'
+        }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
     }
 
     if (url.pathname !== '/approve') {

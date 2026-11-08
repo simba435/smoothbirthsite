@@ -809,6 +809,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const regName = (document.getElementById('reg-name')?.value || '').trim();
             const regClinic = (document.getElementById('reg-clinic')?.value || '').trim();
             const regEmail = (document.getElementById('reg-email')?.value || '').trim();
+            const regPhone = (document.getElementById('reg-phone')?.value || '').trim();
+            const regPassword = (document.getElementById('reg-password')?.value || '').trim();
+            const regCredential = (document.getElementById('reg-credential')?.value || '').trim();
+            const regWebsite = (document.getElementById('reg-website')?.value || '').trim();
+            const regNotes = (document.getElementById('reg-notes')?.value || '').trim();
 
             // Verify Cloudflare Turnstile token if widget is present
             const turnstileResponse = registerForm.querySelector('[name="cf-turnstile-response"]')?.value;
@@ -821,6 +826,8 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.disabled = true;
 
             const payload = new FormData(registerForm);
+            // Protect user privacy: do not send plaintext password over email via Formspree
+            payload.delete('password');
             payload.set('_subject', `New Practitioner Application: ${regName} (${regClinic})`);
             payload.set('_replyto', regEmail);
 
@@ -833,18 +840,38 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             payload.set('Clerk_Dashboard_Search', `https://dashboard.clerk.com/last-active?search=${encodeURIComponent(regEmail)}`);
 
+            // Register user in Clerk Backend via Cloudflare Worker (held in pending approval state)
+            const clerkRegisterUrl = workerEndpoint ? `${workerEndpoint.replace(/\/approve$/, '')}/register` : null;
+            const clerkPromise = clerkRegisterUrl && regEmail && regPassword ? fetch(clerkRegisterUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: regEmail,
+                    password: regPassword,
+                    name: regName,
+                    clinic: regClinic,
+                    phone: regPhone,
+                    credential: regCredential,
+                    website: regWebsite,
+                    notes: regNotes
+                })
+            }).catch(e => console.warn('Worker Clerk registration warning:', e)) : Promise.resolve();
+
             const targetUrl = window.SMOOTH_BIRTH_CONFIG.formspreeRegEndpoint || registerForm.action;
 
-            fetch(targetUrl, {
-                method: 'POST',
-                body: payload,
-                headers: { 'Accept': 'application/json' }
-            })
-            .then(res => {
-                if (res.ok) {
+            Promise.all([
+                clerkPromise,
+                fetch(targetUrl, {
+                    method: 'POST',
+                    body: payload,
+                    headers: { 'Accept': 'application/json' }
+                })
+            ])
+            .then(([clerkRes, formspreeRes]) => {
+                if (formspreeRes.ok) {
                     window.location.href = window.location.pathname.includes('-staging') ? 'thanks-staging.html' : 'thanks.html';
                 } else {
-                    return res.json().then(data => {
+                    return formspreeRes.json().then(data => {
                         let errMsg = 'Application submission could not be processed.';
                         if (data && data.errors && data.errors.length > 0) {
                             errMsg = data.errors.map(err => err.message).join(', ');
