@@ -121,7 +121,7 @@ export default {
                   approvedAt: new Date().toISOString()
                 },
                 redirect_url: `${env.SITE_URL || 'https://smoothbirth.com'}/wholesale.html`,
-                notify: true
+                notify: false
               })
             });
 
@@ -320,14 +320,29 @@ function renderHtmlResponse(data, statusCode = 200) {
           background: #5E7F65;
           color: #FFFFFF;
           text-decoration: none;
-          padding: 0.75rem 1.75rem;
+          padding: 0.85rem 1.75rem;
           border-radius: 4px;
           font-weight: 600;
-          font-size: 0.88rem;
+          font-size: 0.9rem;
           transition: background 0.2s ease;
         }
         .btn:hover {
           background: #3D5A42;
+        }
+        .btn-outline {
+          display: inline-block;
+          background: transparent;
+          color: var(--text-dark, #2A2A2A);
+          border: 1px solid rgba(0,0,0,0.2);
+          text-decoration: none;
+          padding: 0.75rem 1.5rem;
+          border-radius: 4px;
+          font-weight: 500;
+          font-size: 0.85rem;
+          transition: all 0.2s ease;
+        }
+        .btn-outline:hover {
+          background: rgba(0,0,0,0.04);
         }
       </style>
     </head>
@@ -351,7 +366,20 @@ function renderHtmlResponse(data, statusCode = 200) {
           ` : ''}
         </div>
 
-        <a href="${wholesaleUrl}" class="btn">View Wholesale Portal &rarr;</a>
+        ${isSuccess && data.email ? `
+          <div style="margin-bottom: 1.5rem;">
+            <a href="mailto:${encodeURIComponent(data.email)}?subject=${encodeURIComponent('Your Smooth Birth Wholesale Practitioner Account is Approved!')}&body=${encodeURIComponent(
+              `Dear ${data.name || 'Practitioner'},\n\nWelcome to Smooth Birth Apothecary! Your wholesale practitioner credentials for ${data.clinic || 'your practice'} have been verified and approved.\n\nYou can now log into the wholesale dispensary portal to view clinical formulas and place restocking orders directly at:\nhttps://smoothbirth.com/wholesale.html\n\nWholesale Ordering Guidelines:\n• Minimum batch size per formula: 8 oz (8 x 1 oz bottles or 4 x 2 oz bottles)\n• FREE direct shipping on all orders over $250\n• Invoicing sent via Square / QuickBooks upon order submission\n\nIf you have any clinical formula questions or custom perinatal case needs, please feel free to reach out anytime.\n\nWarmly,\nSimba Eun-Hye Shim, L.Ac.\nFounder & Formulator\nSmooth Birth Apothecary\nhttps://smoothbirth.com`
+            )}" class="btn" style="width: 100%; box-sizing: border-box; margin-bottom: 0.75rem; text-align: center;">
+              ✉️ Send Welcome Email to Practitioner &rarr;
+            </a>
+            <div style="font-size: 0.78rem; color: #717171;">
+              Tapping above opens your email app with a pre-written welcome message ready for you to review and send.
+            </div>
+          </div>
+        ` : ''}
+
+        <a href="${wholesaleUrl}" class="btn-outline">View Wholesale Portal &rarr;</a>
       </div>
     </body>
     </html>

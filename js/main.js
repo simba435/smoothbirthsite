@@ -14,8 +14,8 @@ window.SMOOTH_BIRTH_CONFIG = {
     clerkPublishableKey: "pk_live_Y2xlcmsuc21vb3RoYmlydGguY29tJA",
     // Default dispensary access password for approved practitioners
     practitionerPassword: "smoothbirth",
-    // Cloudflare Worker 1-Click Approval Endpoint (configured upon deploy)
-    approvalWorkerEndpoint: "https://smoothbirth-approval-worker.workers.dev/approve",
+    // Cloudflare Worker 1-Click Approval Endpoint
+    approvalWorkerEndpoint: "https://smoothbirth-approval-worker.smoothbirth.workers.dev/approve",
     approvalSecretToken: "sb_dispensary_secret_2026"
 };
 
