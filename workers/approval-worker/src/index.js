@@ -248,7 +248,7 @@ export default {
       } else {
         try {
           const practitionerDisplayName = name || 'Practitioner';
-          const fromEmail = env.FROM_EMAIL || 'Smooth Birth Apothecary <orders@smoothbirth.com>';
+          const fromEmail = env.FROM_EMAIL || 'Smooth Birth Apothecary <hello@smoothbirth.com>';
           const wholesalePortalUrl = `${env.SITE_URL || 'https://smoothbirth.com'}/wholesale.html`;
 
           const emailHtml = `
@@ -313,6 +313,7 @@ export default {
             body: JSON.stringify({
               from: fromEmail,
               to: [email],
+              reply_to: 'hello@smoothbirth.com',
               subject: 'Your Smooth Birth Wholesale Practitioner Account is Approved!',
               html: emailHtml
             })
