@@ -11,11 +11,8 @@ Hosted on **GitHub Pages** with DNS and CDN managed via **Cloudflare**.
 ```
 smoothbirthsite/
 ├── index.html              # Public homepage (Hero, 4 Horizontal Phase Accordions, FAQ, FDA Disclaimer)
-├── index-staging.html      # Staging duplicate of index.html
 ├── about.html              # Meet the Founder & Formulator (Simba Eun-Hye Shim, L.Ac. clinical background)
-├── about-staging.html      # Staging duplicate of about.html
 ├── wholesale.html          # B2B Portal (Live Wholesale Order Calculator, Free Shipping Meter, Registration Form)
-├── wholesale-staging.html  # Staging duplicate of wholesale.html
 ├── swell-away.html         # Phase 1: Swell Away (2 oz) Product Page
 ├── deep-rest-1.html        # Phase 1: Deep Rest 1 (2 oz) Product Page
 ├── deep-rest-2.html        # Phase 1: Deep Rest 2 (2 oz) Product Page
@@ -27,11 +24,8 @@ smoothbirthsite/
 ├── turn-around.html        # Phase 3: Turn Around (2 oz) Product Page
 ├── abundant-flow.html      # Phase 4: Abundant Flow (2 oz) Product Page
 ├── thanks.html             # Submission confirmation page
-├── thanks-staging.html     # Staging duplicate of thanks.html
 ├── privacy.html            # Healthcare & B2B Privacy Policy
-├── privacy-staging.html    # Staging duplicate of privacy.html
 ├── terms.html              # Terms of Service & FDA Regulatory Notices
-├── terms-staging.html      # Staging duplicate of terms.html
 ├── promote-staging.sh      # Helper script to promote staging changes to production (17 pages supported)
 ├── CNAME                   # Custom domain pointer: smoothbirth.com
 ├── robots.txt              # Search engine crawling rules (blocks staging indexing)
@@ -140,12 +134,17 @@ The Wholesale Order Form and Practitioner Registration Form are protected agains
 
 ## 🎭 Staging Environment & Promotion Workflow
 
-The site includes full-fidelity duplicate staging pages ending in `-staging.html` for staging and previewing modifications safely before publishing to production:
-- `https://smoothbirth.com/index-staging.html`
-- `https://smoothbirth.com/wholesale-staging.html`
-- `https://smoothbirth.com/thanks-staging.html`
-- `https://smoothbirth.com/privacy-staging.html`
-- `https://smoothbirth.com/terms-staging.html`
+Staging pages (`*-staging.html`) provide full-fidelity duplicate environments for testing and previewing modifications safely before publishing to live production.
+
+### Restoring or Creating Staging Pages
+If staging pages are needed in the future to test layout or copy changes before going live, you can restore them from git history at any time:
+```bash
+# Restore all 17 staging pages from git history
+git checkout fa80ea4 -- '*-staging.html'
+
+# Or restore a single staging page
+git checkout fa80ea4 -- 'index-staging.html'
+```
 
 ### Key Staging Features:
 - **Noindex Protection**: All staging pages include `<meta name="robots" content="noindex, nofollow">` and are disallowed in `robots.txt` so search engine crawlers will never index duplicate content or affect live SEO.
@@ -154,7 +153,7 @@ The site includes full-fidelity duplicate staging pages ending in `-staging.html
 - **Form Submission Routing**: In `js/main.js`, form submission redirects point to `thanks-staging.html` when submitted from a staging page.
 
 ### Promoting Staged Changes to Production:
-Use the included `promote-staging.sh` helper to promote individual or all pages with 1 command:
+Once changes on staging pages are tested and approved, use the included `promote-staging.sh` helper to promote individual or all pages with 1 command:
 ```bash
 # Promote all 17 staging pages to production
 ./promote-staging.sh all
