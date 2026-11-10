@@ -106,6 +106,62 @@
             margin-bottom: 1rem;
             display: inline-block;
         }
+
+        .sourcing-box {
+            background: #FFFFFF;
+            border: 1px solid rgba(184, 149, 106, 0.35);
+            border-radius: 12px;
+            padding: 3.25rem 2.5rem;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.04);
+            margin-top: 4rem;
+        }
+
+        .sourcing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2.25rem;
+            text-align: left;
+        }
+
+        .sourcing-item {
+            background: #FAF8F5;
+            border: 1px solid rgba(184, 149, 106, 0.2);
+            border-radius: 8px;
+            padding: 1.6rem 1.4rem;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .sourcing-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .sourcing-item-icon {
+            font-size: 1.6rem;
+            margin-bottom: 0.75rem;
+            display: inline-block;
+        }
+
+        .sourcing-item-title {
+            font-family: var(--font-serif);
+            font-size: 1.15rem;
+            color: var(--primary-dark);
+            margin-bottom: 0.6rem;
+        }
+
+        .sourcing-item-text {
+            font-size: 0.88rem;
+            line-height: 1.65;
+            color: var(--text-body);
+            margin: 0;
+        }
+
+        @media (max-width: 600px) {
+            .sourcing-box {
+                padding: 2.25rem 1.25rem;
+            }
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -230,10 +286,62 @@
 
                 <div class="philosophy-card">
                     <span class="philosophy-icon">🌿</span>
-                    <h3 style="font-size: 1.25rem; font-family: var(--font-serif); margin-bottom: 0.6rem; color: var(--primary-dark);">Clean &amp; Lab-Verified</h3>
+                    <h3 style="font-size: 1.25rem; font-family: var(--font-serif); margin-bottom: 0.6rem; color: var(--primary-dark);">Premium &amp; Ethically Sourced</h3>
                     <p style="font-size: 0.9rem; line-height: 1.7; color: var(--text-body);">
-                        Formulated exclusively with premium organic and ethically wildcrafted herbs, certified gluten-free cane alcohol, and reverse-osmosis filtered water. Free from fillers or artificial additives.
+                        Expertly crafted in partnership with Golden Lotus Herbs using premium, ethically sourced traditional herbs, organic cane alcohol (naturally gluten-free), and pure filtered water.
                     </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botanical Sourcing & Formulation Integrity Section -->
+        <div class="container" style="max-width: 1040px;">
+            <div class="sourcing-box reveal">
+                <div style="text-align: center; max-width: 780px; margin: 0 auto;">
+                    <span class="section-subtitle">Botanical Sourcing &amp; Potency</span>
+                    <h2 class="section-title" style="font-size: clamp(1.6rem, 2.8vw, 2.1rem); margin-bottom: 1.1rem;">
+                        Premium &amp; Ethically Sourced
+                    </h2>
+                    <p style="color: var(--text-body); font-size: 0.98rem; line-height: 1.8; margin-bottom: 1.25rem;">
+                        Our tinctures are expertly crafted in partnership with Golden Lotus Herbs, a manufacturer renowned for their high-quality botanical extractions. Each formula is created using premium, ethically sourced traditional herbs and concentrated at optimal extraction ratios for clinical potency.
+                    </p>
+                    <p style="color: var(--primary-dark); font-weight: 600; font-size: 1.02rem; margin: 0; font-family: var(--font-serif);">
+                        Our formulations contain exactly what is necessary to support your perinatal journey:
+                    </p>
+                </div>
+
+                <div class="sourcing-grid">
+                    <div class="sourcing-item">
+                        <span class="sourcing-item-icon">🌿</span>
+                        <h3 class="sourcing-item-title">Premium Botanicals</h3>
+                        <p class="sourcing-item-text">
+                            We use carefully inspected, high-quality herbs sourced for their purity and traditional effectiveness.
+                        </p>
+                    </div>
+
+                    <div class="sourcing-item">
+                        <span class="sourcing-item-icon">🌾</span>
+                        <h3 class="sourcing-item-title">Organic Cane Alcohol</h3>
+                        <p class="sourcing-item-text">
+                            Our herbs are extracted using organic sugar cane alcohol (typically around 20% by volume), creating a clean, naturally gluten-free menstruum that maximizes the delivery of active plant compounds.
+                        </p>
+                    </div>
+
+                    <div class="sourcing-item">
+                        <span class="sourcing-item-icon">💧</span>
+                        <h3 class="sourcing-item-title">Pure Filtered Water</h3>
+                        <p class="sourcing-item-text">
+                            Blended with pure filtered and alkaline water for a perfectly balanced liquid extract.
+                        </p>
+                    </div>
+
+                    <div class="sourcing-item">
+                        <span class="sourcing-item-icon">✨</span>
+                        <h3 class="sourcing-item-title">Nothing Else</h3>
+                        <p class="sourcing-item-text">
+                            Completely free from unnecessary fillers, synthetic additives, or artificial flavorings.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
