@@ -689,7 +689,8 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(res => {
                 if (res.ok) {
-                    window.location.href = window.location.pathname.includes('-staging') ? 'thanks-staging.html' : 'thanks.html';
+                    const redirectPage = window.location.pathname.includes('-staging') ? 'thanks-staging.html' : 'thanks.html';
+                    window.location.href = redirectPage + '?type=order';
                 } else {
                     return res.json().then(data => {
                         let errMsg = 'There was an issue processing your order submission.';
@@ -805,7 +806,8 @@ document.addEventListener('DOMContentLoaded', () => {
             ])
             .then(([clerkRes, formspreeRes]) => {
                 if (formspreeRes.ok) {
-                    window.location.href = window.location.pathname.includes('-staging') ? 'thanks-staging.html' : 'thanks.html';
+                    const redirectPage = window.location.pathname.includes('-staging') ? 'thanks-staging.html' : 'thanks.html';
+                    window.location.href = redirectPage + '?type=application';
                 } else {
                     return formspreeRes.json().then(data => {
                         let errMsg = 'Application submission could not be processed.';

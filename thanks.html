@@ -32,18 +32,76 @@
     <main class="container" style="max-width: 680px; margin: auto; padding: 4rem 2rem; text-align: center;">
         <div style="background: #fff; padding: 3.5rem 2.5rem; border-radius: 8px; border: 1px solid var(--border-gold); box-shadow: var(--shadow-md);">
             <div style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;">❧</div>
-            <h1 style="font-family: var(--font-serif); font-size: 2.2rem; margin-bottom: 1rem; color: var(--text-dark);">Thank You for Reaching Out</h1>
-            <p style="font-size: 1.15rem; line-height: 1.8; color: var(--text-dark); font-weight: 500; margin-bottom: 2rem;">
-                Your application is under review. Once reviewed, you will be notified by email.
-            </p>
-            <div style="background: var(--bg-cream); border-left: 3px solid var(--gold); padding: 1.2rem 1.5rem; border-radius: 4px; text-align: left; margin-bottom: 2.5rem; font-size: 0.9rem; line-height: 1.7;">
-                <strong>What happens next?</strong><br>
-                &bull; <strong>For Wholesale Orders:</strong> Our team will review your order details and email a secure invoice for payment (via Square or QuickBooks). Upon payment, your order is submitted for fresh manufacturing and drop-shipped directly to your practice.<br>
-                &bull; <strong>For Practitioner Applications:</strong> We verify clinical credentials within 24 hours and send your account welcome notification.
+
+            <!-- Wholesale Order Confirmation View -->
+            <div id="view-order" style="display: none;">
+                <h1 style="font-family: var(--font-serif); font-size: 2.2rem; margin-bottom: 1rem; color: var(--text-dark);">Order Request Received</h1>
+                <p style="font-size: 1.15rem; line-height: 1.8; color: var(--text-dark); font-weight: 500; margin-bottom: 2rem;">
+                    Thank you for your order! Your batch request has been submitted directly to our dispensary team.
+                </p>
+                <div style="background: var(--bg-cream); border-left: 3px solid var(--gold); padding: 1.4rem 1.6rem; border-radius: 4px; text-align: left; margin-bottom: 2.5rem; font-size: 0.92rem; line-height: 1.8;">
+                    <strong style="color: var(--primary-dark); font-size: 1rem; display: block; margin-bottom: 0.6rem;">What happens next?</strong>
+                    <div style="margin-bottom: 0.6rem;">
+                        <strong>1. Invoice via Square / QuickBooks:</strong> Our dispensary team will review your order details and email a secure electronic invoice for payment.
+                    </div>
+                    <div style="margin-bottom: 0.6rem;">
+                        <strong>2. Fresh Compounding:</strong> Upon payment, your tinctures are freshly compounded and bottled for your practice.
+                    </div>
+                    <div style="margin-bottom: 0.6rem;">
+                        <strong>3. Direct Shipping &amp; Tracking:</strong> Your order is drop-shipped directly to your practice via FedEx or UPS, with tracking emailed to you upon dispatch.
+                    </div>
+                    <div style="font-size: 0.85rem; color: var(--text-light); border-top: 1px dashed var(--border-light); padding-top: 0.6rem; margin-top: 0.6rem;">
+                        Need to make changes or have questions? Email us directly at <a href="mailto:info@smoothbirth.com" style="color: var(--primary); font-weight: 600; text-decoration: underline;">info@smoothbirth.com</a>.
+                    </div>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="wholesale.html" class="btn-primary" style="text-decoration: none;">Return to Wholesale Portal</a>
+                    <a href="index.html" class="btn-secondary" style="text-decoration: none;">Main Website</a>
+                </div>
             </div>
-            <a href="index.html" class="btn-primary">Return to Main Website</a>
+
+            <!-- Practitioner Application View (Default) -->
+            <div id="view-application">
+                <h1 style="font-family: var(--font-serif); font-size: 2.2rem; margin-bottom: 1rem; color: var(--text-dark);">Practitioner Application Received</h1>
+                <p style="font-size: 1.15rem; line-height: 1.8; color: var(--text-dark); font-weight: 500; margin-bottom: 2rem;">
+                    Thank you for applying. Your application is under review. Once reviewed, you will be notified by email.
+                </p>
+                <div style="background: var(--bg-cream); border-left: 3px solid var(--gold); padding: 1.4rem 1.6rem; border-radius: 4px; text-align: left; margin-bottom: 2.5rem; font-size: 0.92rem; line-height: 1.8;">
+                    <strong style="color: var(--primary-dark); font-size: 1rem; display: block; margin-bottom: 0.6rem;">What happens next?</strong>
+                    <div style="margin-bottom: 0.6rem;">
+                        &bull; <strong>Clinical Credential Review:</strong> We verify licensing or professional doula/midwifery certifications within 24 business hours.
+                    </div>
+                    <div style="margin-bottom: 0.6rem;">
+                        &bull; <strong>Welcome &amp; Access Notification:</strong> Once verified, you will receive an account welcome email with portal access and wholesale ordering privileges.
+                    </div>
+                    <div style="font-size: 0.85rem; color: var(--text-light); border-top: 1px dashed var(--border-light); padding-top: 0.6rem; margin-top: 0.6rem;">
+                        Questions about your application? Reach out to <a href="mailto:info@smoothbirth.com" style="color: var(--primary); font-weight: 600; text-decoration: underline;">info@smoothbirth.com</a>.
+                    </div>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="index.html" class="btn-primary" style="text-decoration: none;">Return to Main Website</a>
+                    <a href="wholesale.html" class="btn-secondary" style="text-decoration: none;">Wholesale Portal</a>
+                </div>
+            </div>
+
         </div>
     </main>
+
+    <script>
+        (function() {
+            var params = new URLSearchParams(window.location.search);
+            var type = params.get('type');
+            if (type === 'order') {
+                document.getElementById('view-order').style.display = 'block';
+                document.getElementById('view-application').style.display = 'none';
+                document.title = 'Order Received | Smooth Birth Apothecary';
+            } else {
+                document.getElementById('view-application').style.display = 'block';
+                document.getElementById('view-order').style.display = 'none';
+                document.title = 'Application Received | Smooth Birth Apothecary';
+            }
+        })();
+    </script>
 
     <footer class="footer" style="margin-top: auto;">
         <div class="container">
