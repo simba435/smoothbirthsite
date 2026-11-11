@@ -114,6 +114,188 @@ export default {
       }
     }
 
+    // Wholesale Order Confirmation Email (sent directly to practitioner upon order submission)
+    if (url.pathname === '/order-confirmation' && request.method === 'POST') {
+      try {
+        const body = await request.json();
+        const { email, contactName, clinicName, phone, shippingAddress, notes, orderSummary } = body;
+
+        if (!email) {
+          return new Response(JSON.stringify({ error: 'Practitioner email is required' }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        if (!env.RESEND_API_KEY) {
+          return new Response(JSON.stringify({ error: 'RESEND_API_KEY not configured in worker environment' }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        const fromEmail = env.FROM_EMAIL || 'Smooth Birth Apothecary <hello@smoothbirth.com>';
+        const practitionerDisplayName = contactName || 'Practitioner';
+        const clinicDisplayName = clinicName || 'Your Practice';
+
+        // Build itemized table rows
+        let itemsTableHtml = '';
+        if (orderSummary && Array.isArray(orderSummary.items) && orderSummary.items.length > 0) {
+          itemsTableHtml = `
+            <table width="100%" cellpadding="0" cellspacing="0" style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px;">
+              <thead>
+                <tr style="background: #F7F4EF; border-bottom: 2px solid #EAE6DF; text-align: left;">
+                  <th style="padding: 10px 12px; font-weight: 600; color: #2D3E30;">Formula</th>
+                  <th style="padding: 10px 12px; font-weight: 600; color: #2D3E30;">Size</th>
+                  <th style="padding: 10px 12px; font-weight: 600; color: #2D3E30; text-align: center;">Qty</th>
+                  <th style="padding: 10px 12px; font-weight: 600; color: #2D3E30; text-align: right;">Wholesale</th>
+                  <th style="padding: 10px 12px; font-weight: 600; color: #2D3E30; text-align: right;">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${orderSummary.items.map((it, idx) => `
+                  <tr style="border-bottom: 1px solid #EAE6DF; background: ${idx % 2 === 0 ? '#FFFFFF' : '#FAFAF8'};">
+                    <td style="padding: 10px 12px; color: #2A2A2A; font-weight: 500;">${it.item}</td>
+                    <td style="padding: 10px 12px; color: #717171;">${it.size}</td>
+                    <td style="padding: 10px 12px; color: #2A2A2A; text-align: center; font-weight: 600;">${it.qty}</td>
+                    <td style="padding: 10px 12px; color: #4A4A4A; text-align: right;">$${Number(it.price).toFixed(2)}</td>
+                    <td style="padding: 10px 12px; color: #2D3E30; text-align: right; font-weight: 600;">$${Number(it.subtotal).toFixed(2)}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          `;
+        }
+
+        const subtotal = orderSummary ? `$${Number(orderSummary.subtotal || 0).toFixed(2)}` : '$0.00';
+        const shippingFee = orderSummary && Number(orderSummary.shipping) === 0 ? 'FREE (Orders over $250)' : `$${Number(orderSummary ? orderSummary.shipping : 15).toFixed(2)} Flat Rate`;
+        const grandTotal = orderSummary ? `$${Number(orderSummary.estimated_total || 0).toFixed(2)}` : '$0.00';
+        const totalBottles = orderSummary ? `${orderSummary.total_bottles || 0} bottles` : '';
+
+        const orderEmailHtml = `
+          <!DOCTYPE html>
+          <html>
+          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #FAFAF8; margin: 0; padding: 24px; color: #2A2A2A;">
+            <table align="center" width="100%" style="max-width: 620px; background: #FFFFFF; border-radius: 8px; border: 1px solid #EAE6DF; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.04); margin: auto;">
+              <tr>
+                <td style="background: #2D3E30; padding: 28px 32px; text-align: center;">
+                  <span style="font-size: 28px; color: #D4BFA0; display: block; margin-bottom: 4px;">❧</span>
+                  <h1 style="color: #FFFFFF; font-size: 22px; font-weight: 400; margin: 0; letter-spacing: 0.5px;">Smooth Birth Apothecary</h1>
+                  <p style="color: #D4BFA0; font-size: 12px; margin: 6px 0 0; text-transform: uppercase; letter-spacing: 2px;">Wholesale Order Request Confirmation</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 36px 32px;">
+                  <div style="display: inline-block; background: #E8F5E9; color: #2E7D32; font-weight: 600; padding: 4px 12px; border-radius: 20px; font-size: 12px; margin-bottom: 14px;">
+                    ✓ REQUEST RECEIVED
+                  </div>
+                  <h2 style="color: #2D3E30; font-size: 20px; font-weight: 500; margin: 0 0 16px;">We’ve Received Your Restocking Order</h2>
+                  <p style="font-size: 15px; line-height: 1.7; color: #4A4A4A; margin: 0 0 16px;">
+                    Dear ${practitionerDisplayName},
+                  </p>
+                  <p style="font-size: 15px; line-height: 1.7; color: #4A4A4A; margin: 0 0 20px;">
+                    Thank you for ordering with Smooth Birth Apothecary. We have received your wholesale restocking request for <strong>${clinicDisplayName}</strong>.
+                  </p>
+
+                  <h3 style="color: #2D3E30; font-size: 16px; margin: 24px 0 8px; border-bottom: 1px solid #EAE6DF; padding-bottom: 8px;">Requested Formulas</h3>
+                  ${itemsTableHtml}
+
+                  <div style="background: #F7F4EF; border-radius: 6px; padding: 16px 20px; margin: 20px 0;">
+                    <table width="100%" style="font-size: 14px; line-height: 1.8;">
+                      <tr>
+                        <td style="color: #717171;">Total Bottles Requested:</td>
+                        <td style="text-align: right; font-weight: 600; color: #2A2A2A;">${totalBottles}</td>
+                      </tr>
+                      <tr>
+                        <td style="color: #717171;">Wholesale Products Subtotal:</td>
+                        <td style="text-align: right; font-weight: 600; color: #2A2A2A;">${subtotal}</td>
+                      </tr>
+                      <tr>
+                        <td style="color: #717171;">Direct Shipping:</td>
+                        <td style="text-align: right; font-weight: 600; color: #2A2A2A;">${shippingFee}</td>
+                      </tr>
+                      <tr style="border-top: 1px dashed #D4BFA0;">
+                        <td style="padding-top: 8px; font-weight: 700; color: #2D3E30; font-size: 15px;">Estimated Invoice Total:</td>
+                        <td style="padding-top: 8px; text-align: right; font-weight: 700; color: #2D3E30; font-size: 16px;">${grandTotal}</td>
+                      </tr>
+                    </table>
+                  </div>
+
+                  <h3 style="color: #2D3E30; font-size: 16px; margin: 24px 0 8px; border-bottom: 1px solid #EAE6DF; padding-bottom: 8px;">Clinic & Shipping Information</h3>
+                  <div style="font-size: 14px; line-height: 1.7; color: #4A4A4A; margin-bottom: 20px;">
+                    <strong>Clinic / Practice:</strong> ${clinicDisplayName}<br>
+                    <strong>Primary Contact:</strong> ${practitionerDisplayName}<br>
+                    <strong>Invoice Email:</strong> ${email}<br>
+                    ${phone ? `<strong>Phone:</strong> ${phone}<br>` : ''}
+                    <strong>Shipping Address:</strong> ${shippingAddress || 'On file'}<br>
+                    ${notes ? `<strong>Special Instructions:</strong> <em>${notes}</em><br>` : ''}
+                  </div>
+
+                  <div style="background: #F7F4EF; border-left: 3px solid #B8956A; padding: 14px 18px; border-radius: 4px; margin: 24px 0; font-size: 14px; line-height: 1.6; color: #4A4A4A;">
+                    <strong style="color: #2D3E30;">What happens next?</strong><br>
+                    &bull; <strong>Square / QuickBooks Invoicing:</strong> Our dispensary team reviews your requested batch quantities and will email a secure electronic invoice for payment.<br>
+                    &bull; <strong>Fresh Compounding &amp; Drop-Shipping:</strong> Upon payment, your formulas are freshly compounded and drop-shipped directly from our manufacturing partner to your practice with FedEx/UPS tracking.
+                  </div>
+
+                  <p style="font-size: 14px; line-height: 1.6; color: #4A4A4A; margin: 24px 0 0;">
+                    Warmly,<br>
+                    <strong>Smooth Birth Apothecary</strong><br>
+                    <span style="font-size: 13px; color: #717171;">Clinical Dispensary Team</span>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td style="background: #FAFAF8; padding: 20px 32px; text-align: center; border-top: 1px solid #EAE6DF; font-size: 12px; color: #9A9A9A;">
+                  Questions about your order? Reply directly to this email or reach us at <a href="mailto:hello@smoothbirth.com" style="color: #5E7F65; text-decoration: none;">hello@smoothbirth.com</a>.<br>
+                  &copy; 2026 Smooth Birth Apothecary LLC &bull; Boulder, Colorado &bull; <a href="https://smoothbirth.com" style="color: #5E7F65; text-decoration: none;">smoothbirth.com</a>
+                </td>
+              </tr>
+            </table>
+          </body>
+          </html>
+        `;
+
+        const resendRes = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            from: fromEmail,
+            to: [email],
+            reply_to: 'hello@smoothbirth.com',
+            subject: `Wholesale Order Request Received - ${clinicDisplayName}`,
+            html: orderEmailHtml
+          })
+        });
+
+        if (!resendRes.ok) {
+          const resendErr = await resendRes.text();
+          return new Response(JSON.stringify({ error: `Resend error: ${resendErr}` }), {
+            status: 502,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        const resendData = await resendRes.json();
+        return new Response(JSON.stringify({
+          success: true,
+          message: 'Order confirmation email sent successfully to practitioner.',
+          id: resendData.id
+        }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
     if (url.pathname !== '/approve') {
       return new Response('Not Found', { status: 404 });
     }

@@ -16,7 +16,9 @@ window.SMOOTH_BIRTH_CONFIG = {
     practitionerPassword: "smoothbirth",
     // Cloudflare Worker 1-Click Approval Endpoint
     approvalWorkerEndpoint: "https://smoothbirth-approval-worker.smoothbirth.workers.dev/approve",
-    approvalSecretToken: "sb_dispensary_secret_2026"
+    approvalSecretToken: "sb_dispensary_secret_2026",
+    // Cloudflare Worker Order Confirmation Endpoint
+    orderConfirmationEndpoint: "https://smoothbirth-approval-worker.smoothbirth.workers.dev/order-confirmation"
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -679,6 +681,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 payload.append('special_instructions', notes);
             }
             payload.append('terms_acknowledged', 'Yes (Agreed to invoice & fulfillment terms)');
+
+            // Build structured order summary data for practitioner email confirmation receipt
+            let structuredSummary = null;
+            try {
+                if (orderSummaryJson && orderSummaryJson.value) {
+                    structuredSummary = JSON.parse(orderSummaryJson.value);
+                }
+            } catch (e) {
+                structuredSummary = null;
+            }
+
+            const confirmationEndpoint = window.SMOOTH_BIRTH_CONFIG.orderConfirmationEndpoint || 
+                'https://smoothbirth-approval-worker.smoothbirth.workers.dev/order-confirmation';
+
+            // Send branded order confirmation receipt to practitioner via Cloudflare Worker + Resend
+            const emailPromise = fetch(confirmationEndpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: contactEmail,
+                    contactName: contactName,
+                    clinicName: clinicName,
+                    phone: contactPhone,
+                    shippingAddress: shippingAddress,
+                    notes: notes,
+                    orderSummary: structuredSummary
+                }),
+                keepalive: true
+            }).catch(e => console.warn('Order confirmation email notice:', e));
 
             const targetUrl = window.SMOOTH_BIRTH_CONFIG.formspreeOrderEndpoint || orderForm.action;
 
