@@ -705,7 +705,8 @@
         /* Wide Horizontal Bar Header (Closed State) */
         .phase-bar-header {
             width: 100%;
-            background: #FFFFFF !important;
+            min-height: 124px;
+            background: #FDF5EC !important;
             border: none;
             padding: 1.35rem 1.85rem !important;
             display: flex !important;
@@ -714,17 +715,18 @@
             cursor: pointer;
             text-align: left;
             position: relative;
+            overflow: hidden;
             transition: background 0.25s ease;
             gap: 1.5rem;
             user-select: none;
         }
 
         .phase-accordion-bar:hover .phase-bar-header {
-            background: #FAFAFA !important;
+            background: #FBF1E5 !important;
         }
 
         .phase-accordion-bar.open .phase-bar-header {
-            background: #FCFCFC !important;
+            background: #FDF5EC !important;
             border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
         }
 
@@ -735,6 +737,7 @@
             top: 0;
             bottom: 0;
             width: 6px;
+            z-index: 3;
             transition: width 0.25s ease;
         }
 
@@ -751,6 +754,8 @@
             flex: 1 1 auto;
             min-width: 0;
             padding-left: 0.5rem;
+            position: relative;
+            z-index: 2;
         }
 
         .phase-tags-row {
@@ -795,44 +800,51 @@
             color: var(--phase-dark) !important;
         }
 
-        /* Right Group: Thumbnail + Chevron */
+        /* Right Group: Merged Banner Artwork + Chevron */
+        .phase-bar-artwork {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            height: 100%;
+            width: auto;
+            max-width: 55%;
+            pointer-events: none;
+            z-index: 1;
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 22%);
+            mask-image: linear-gradient(to right, transparent 0%, black 22%);
+        }
+
+        .phase-bar-artwork img {
+            height: 100%;
+            width: auto;
+            display: block;
+            object-fit: cover;
+            object-position: right center;
+            transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .phase-accordion-bar:hover .phase-bar-artwork img {
+            transform: scale(1.03);
+        }
+
         .phase-bar-right {
             display: flex;
             align-items: center;
             gap: 1.25rem;
             flex-shrink: 0;
-        }
-
-        .phase-bar-thumb {
-            width: 135px;
-            height: 60px;
-            border-radius: 8px;
-            overflow: hidden;
             position: relative;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            background: #F4EFEB;
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
-        }
-
-        .phase-bar-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-            transition: transform 0.4s ease;
-            display: block;
-        }
-
-        .phase-accordion-bar:hover .phase-bar-thumb img {
-            transform: scale(1.06);
+            z-index: 2;
         }
 
         .phase-chevron-btn {
             width: 38px !important;
             height: 38px !important;
             border-radius: 50% !important;
-            background: #F7FAFC !important;
+            background: rgba(255, 255, 255, 0.92) !important;
+            backdrop-filter: blur(4px);
             border: 1px solid rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
@@ -983,14 +995,18 @@
 
         @media (max-width: 768px) {
             .phase-bar-header {
+                min-height: 100px;
                 padding: 1.1rem 1.25rem !important;
                 gap: 1rem;
             }
             .phase-title {
                 font-size: 1.35rem !important;
             }
-            .phase-bar-thumb {
-                display: none;
+            .phase-bar-artwork {
+                max-width: 52%;
+                opacity: 0.7;
+                -webkit-mask-image: linear-gradient(to right, transparent 0%, black 38%);
+                mask-image: linear-gradient(to right, transparent 0%, black 38%);
             }
             .phase-bar-body {
                 padding: 1.5rem 1.25rem 2rem !important;
@@ -1140,10 +1156,10 @@
                             </div>
                             <h3 class="phase-title">Pregnancy Support</h3>
                         </div>
+                        <div class="phase-bar-artwork" aria-hidden="true">
+                            <img src="images/bars/phase-1-banner.jpg" alt="Pregnancy Support illustration" loading="lazy">
+                        </div>
                         <div class="phase-bar-right">
-                            <div class="phase-bar-thumb" title="Pregnancy Support Lineup">
-                                <img src="images/pregnancy support.jpeg" alt="Pregnancy Support Bottles" loading="lazy">
-                            </div>
                             <div class="phase-chevron-btn cat-chevron" aria-label="Toggle Pregnancy Support">
                                 <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <polyline points="6 9 12 15 18 9"></polyline>
@@ -1199,10 +1215,10 @@
                             </div>
                             <h3 class="phase-title">Birth Prep</h3>
                         </div>
+                        <div class="phase-bar-artwork" aria-hidden="true">
+                            <img src="images/bars/phase-2-banner.jpg" alt="Birth Prep illustration" loading="lazy">
+                        </div>
                         <div class="phase-bar-right">
-                            <div class="phase-bar-thumb" title="Birth Prep Lineup">
-                                <img src="images/birth prep.jpeg" alt="Birth Prep Bottles" loading="lazy">
-                            </div>
                             <div class="phase-chevron-btn cat-chevron" aria-label="Toggle Birth Prep">
                                 <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <polyline points="6 9 12 15 18 9"></polyline>
@@ -1244,10 +1260,10 @@
                             </div>
                             <h3 class="phase-title">Labor Support</h3>
                         </div>
+                        <div class="phase-bar-artwork" aria-hidden="true">
+                            <img src="images/bars/phase-3-banner.jpg" alt="Labor Support illustration" loading="lazy">
+                        </div>
                         <div class="phase-bar-right">
-                            <div class="phase-bar-thumb" title="Labor Support Lineup">
-                                <img src="images/labor support.jpeg" alt="Labor Support Bottles" loading="lazy">
-                            </div>
                             <div class="phase-chevron-btn cat-chevron" aria-label="Toggle Labor Support">
                                 <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <polyline points="6 9 12 15 18 9"></polyline>
@@ -1296,10 +1312,10 @@
                             </div>
                             <h3 class="phase-title">Postpartum</h3>
                         </div>
+                        <div class="phase-bar-artwork" aria-hidden="true">
+                            <img src="images/bars/phase-4-banner.jpg" alt="Postpartum illustration" loading="lazy">
+                        </div>
                         <div class="phase-bar-right">
-                            <div class="phase-bar-thumb" title="Postpartum Care">
-                                <img src="images/hero-bedside-bottles.jpg" alt="Postpartum Bottles" loading="lazy">
-                            </div>
                             <div class="phase-chevron-btn cat-chevron" aria-label="Toggle Postpartum">
                                 <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <polyline points="6 9 12 15 18 9"></polyline>
