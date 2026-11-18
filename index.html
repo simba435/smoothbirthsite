@@ -118,26 +118,28 @@
             color: var(--gold) !important;
         }
 
-        .navbar .nav-links a:not(.btn-primary) {
-            color: var(--text-dark) !important;
-        }
+        @media (min-width: 769px) {
+            .navbar .nav-links a:not(.btn-primary) {
+                color: var(--text-dark) !important;
+            }
 
-        .navbar .nav-links a:hover:not(.btn-primary) {
-            color: var(--primary) !important;
-        }
+            .navbar .nav-links a:hover:not(.btn-primary) {
+                color: var(--primary) !important;
+            }
 
-        .navbar .caret {
-            color: var(--gold-dark) !important;
+            .navbar .caret {
+                color: var(--gold-dark) !important;
+            }
+
+            .dropdown-menu {
+                background: #FFFFFF !important;
+                border: 1px solid rgba(0, 0, 0, 0.08) !important;
+                box-shadow: var(--shadow-md) !important;
+            }
         }
 
         .navbar .hamburger .bar {
             background-color: var(--primary-dark) !important;
-        }
-
-        .dropdown-menu {
-            background: #FFFFFF !important;
-            border: 1px solid rgba(0, 0, 0, 0.08) !important;
-            box-shadow: var(--shadow-md) !important;
         }
 
         /* 4. Hero Section - Soft Clinical Off-White replacing dark section */
@@ -1362,11 +1364,6 @@
                 <a href="wholesale.html" style="font-weight: 600; color: var(--primary);">Wholesale Portal</a>
                 <a href="privacy.html">Privacy Policy</a>
                 <a href="terms.html">Terms of Service</a>
-            </div>
-
-            <!-- Mandatory FDA Disclaimer -->
-            <div class="fda-disclaimer">
-                <strong>FDA Compliance Notice:</strong> These statements have not been evaluated by the Food and Drug Administration. These products are not intended to diagnose, treat, cure, or prevent any disease. Always consult your midwife, obstetrician, or healthcare provider before taking any herbal supplements during pregnancy or lactation.
             </div>
 
             <div class="footer-divider"></div>
